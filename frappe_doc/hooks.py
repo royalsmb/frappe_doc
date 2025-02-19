@@ -28,17 +28,6 @@ app_license = "mit"
 # app_include_css = "/assets/frappe_doc/css/frappe_doc.css"
 # app_include_js = "/assets/frappe_doc/js/frappe_doc.js"
 
-app_include_js = [
-    "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js"
-]
-
-app_include_css = [
-    "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css"
-]
-
-website_route_rules = [
-    {"from_route": "/swagger", "to_route": "swagger"}
-]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/frappe_doc/css/frappe_doc.css"

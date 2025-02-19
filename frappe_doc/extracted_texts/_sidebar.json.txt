@@ -1,6 +1,0 @@
-[
-	{
-	 "route": "/_test/_test_folder",
-	 "title": "Test Sidebar"
-	}
-]

@@ -1,8 +1,0 @@
-import { r as redirect } from "../../../chunks/index.js";
-import { b as base } from "../../../chunks/paths.js";
-const load = () => {
-  throw redirect(303, base + "/pos/order");
-};
-export {
-  load
-};
