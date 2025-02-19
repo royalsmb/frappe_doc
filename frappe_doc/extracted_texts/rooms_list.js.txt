@@ -1,0 +1,35 @@
+frappe.listview_settings['Rooms'] = {
+    button: {
+        show: function(doc) {
+            // Show the button for both Available and Checked In statuses
+            return doc.room_status === 'Available' || doc.room_status === 'Checked In';
+        },
+        get_label: function(doc) {
+            // Change the label based on the room's status
+            return doc.room_status === 'Available' ? __('Check In') : __('Check Out');
+        },
+        get_description: function(doc) {
+            // Change the description based on the room's status
+            return doc.room_status === 'Available'
+                ? __('Check in for room {0}', [doc.name])
+                : __('Check out from room {0}', [doc.name]);
+        },
+        get_style: function(doc) {
+            // Change the button color based on the room's status
+            return doc.room_status === 'Available' ? 'primary' : 'danger';
+        },
+        action: function(doc) {
+            if (doc.room_status === 'Available') {
+                // Redirect to the Hotel Check-In doctype
+                frappe.new_doc('Hotel Check In', {
+                    room: doc.name
+                });
+            } else if (doc.room_status === 'Checked In') {
+                // Redirect to the Hotel Check Out doctype
+                frappe.new_doc('Hotel Check Out', {
+                    room: doc.name
+                });
+            }
+        }
+    }
+}

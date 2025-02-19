@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-28 16:08:44.709559",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "mto",
+  "commission_type",
+  "commission_value"
+ ],
+ "fields": [
+  {
+   "fieldname": "mto",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "MTO",
+   "options": "MTO"
+  },
+  {
+   "fieldname": "commission_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Commission Type",
+   "options": "\nPercentage\nAmount"
+  },
+  {
+   "fieldname": "commission_value",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Commission Value"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-10-28 16:12:36.910556",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Partner MTO Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

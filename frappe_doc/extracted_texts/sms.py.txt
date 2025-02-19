@@ -1,0 +1,49 @@
+# Copyright (c) 2024, jokoor and contributors
+# For license information, please see license.txt
+
+import frappe
+from frappe.model.document import Document
+from frappe.utils import cint, flt
+
+
+class SMS(Document):
+	def validate(self):
+		self.set_channel()
+		if self.sms_template and not self.message:
+			template = frappe.get_doc("SMS Template", self.sms_template)
+			self.message = template.message
+		if self.recipient:
+			contact = frappe.get_doc("SMS Contact", self.recipient)
+			message = self.message
+			if "{{first_name}}" in message:
+				message = message.replace("{{first_name}}", contact.first_name)
+
+			if "{{last_name}}" in message:
+				message = message.replace("{{last_name}}", contact.last_name)
+
+			if "{{phone}}" in message:
+				message = message.replace("{{phone}}", contact.phone)
+
+			if "{{email}}" in message:
+				message = message.replace("{{email}}", contact.email)
+
+			if "{{address}}" in message:
+				message = message.replace("{{address}}", contact.address)
+			self.message = message
+
+		
+		
+	
+	def set_channel(self):
+		phone = self.phone
+		
+		if phone.startswith("3") or phone.startswith("5"):
+			self.channel = "Qcell"
+		elif phone.startswith("2") or phone.startswith("7") or phone.startswith("4"):
+			self.channel = "Africell"
+		elif phone.startswith("6"):
+			self.channel = "Comium"
+		elif phone.startswith("9"):
+			self.channel = "Gamcell"
+
+		

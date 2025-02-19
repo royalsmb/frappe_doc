@@ -1,0 +1,75 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"bdqb1f7WUB\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">My Hotel</span>\",\"col\":12}},{\"id\":\"-aNc2TgEnn\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Petty Cash Expenses (Today)\",\"col\":4}},{\"id\":\"WU5MJafLID\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Petty Cash Expenses (This Month)\",\"col\":4}},{\"id\":\"6RASEaMVDA\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Petty Cash Income (Today)\",\"col\":4}},{\"id\":\"8ZqoN0NwW0\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"h3hn--_nHH\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports</b></span>\",\"col\":12}},{\"id\":\"uL3TSNoIL7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Restaurant Report\",\"col\":3}},{\"id\":\"5q3bRUXMnC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Room Sales\",\"col\":3}},{\"id\":\"aF_NcihD0f\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Petty Cash\",\"col\":3}},{\"id\":\"hhQmJ6K92D\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Store Report\",\"col\":3}}]",
+ "creation": "2024-11-18 20:24:57.813088",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "map",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "My Hotel",
+ "links": [],
+ "modified": "2024-12-14 02:13:06.811167",
+ "modified_by": "Administrator",
+ "module": "Jokoor Hotel",
+ "name": "My Hotel",
+ "number_cards": [
+  {
+   "label": "Petty Cash Expenses (Today)",
+   "number_card_name": "Petty Cash Expenses (Today)"
+  },
+  {
+   "label": "Petty Cash Expenses (This Month)",
+   "number_card_name": "Petty Cash Expense (This Month)"
+  },
+  {
+   "label": "Petty Cash Income (Today)",
+   "number_card_name": "Petty Cash Income (Today)"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "Hotel Manager"
+  }
+ ],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Store Report",
+   "link_to": "Store Report",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Restaurant Report",
+   "link_to": "Restaurant Report",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Room Sales",
+   "link_to": "Room Sales",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Petty Cash",
+   "link_to": "Petty Cash",
+   "type": "Report"
+  }
+ ],
+ "title": "My Hotel"
+}

@@ -1,0 +1,54 @@
+// Copyright (c) 2025, royalsmb and contributors
+// For license information, please see license.txt
+
+frappe.ui.form.on("Student Library", {
+	refresh(frm) {
+        if (!frm.doc.__islocal) {
+            // add a custom button to generate flash card
+            frm.add_custom_button(__('Generate Flash Card'), () => {
+                frappe.call({
+                    method: 'utgbuddy.app.flashcard.enqueue_generate_flashcards',
+                    args: {
+                        library_id: frm.doc.name
+                    },
+                    callback: function(r) {
+                        if (r.message) {
+                            frappe.msgprint("Flashcards are being generated in the background. You will be notified when it is done.");
+                        }
+                    }
+                });
+            })
+            // add a custom button to summarise notes
+            frm.add_custom_button(__('Summarise Notes'), () => {
+                frappe.call({
+                    method: 'utgbuddy.app.notes.enqueue_gengerate_smart_notes',
+                    args: {
+                        library_id: frm.doc.name
+                    },
+                    callback: function(r) {
+                        if (r.message) {
+                            frappe.msgprint("Notes are being summarised in the background. You will be notified when it is done.");
+                        }
+                    }
+                });
+            })
+
+            // add  a button to generate quiz
+            frm.add_custom_button(__('Generate Quiz'), () => {
+                frappe.call({
+                    method: 'utgbuddy.app.quiz.enqueue_quiz_generation',
+                    args: {
+                        library_id: frm.doc.name
+                    },
+                    callback: function(r) {
+                        if (r.message) {
+                            frappe.msgprint("Quiz is being generated in the background. You will be notified when it is done.");
+                        }
+                    }
+                });
+            })
+        }
+
+
+	},
+});

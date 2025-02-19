@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-19 02:35:04.730322",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "group_name",
+  "contacts"
+ ],
+ "fields": [
+  {
+   "fieldname": "group_name",
+   "fieldtype": "Data",
+   "label": "Group Name"
+  },
+  {
+   "fieldname": "contacts",
+   "fieldtype": "Table",
+   "label": "Contacts",
+   "options": "SMS Contact Table"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-19 02:50:15.577252",
+ "modified_by": "Administrator",
+ "module": "Jokoor SMS",
+ "name": "SMS Contact Group",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "group_name",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "group_name"
+}

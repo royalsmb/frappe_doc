@@ -1,0 +1,40 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-08-03 02:32:23.335076",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "schedule",
+  "date"
+ ],
+ "fields": [
+  {
+   "fieldname": "schedule",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Schedule",
+   "options": "Schedule"
+  },
+  {
+   "fetch_from": "schedule.date",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-03 02:37:52.108971",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Schedules",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-07-26 01:39:31.159570",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "category_name",
+  "section_break_irny",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "category_name",
+   "fieldtype": "Select",
+   "label": "Category Name",
+   "options": "Coffee\nTea\nBeverages\nBreakfast\nLunch\nDesserts\nSnacks\nSalads\nSandwiches"
+  },
+  {
+   "fieldname": "section_break_irny",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-07-26 01:40:49.034868",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Cafe Category",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

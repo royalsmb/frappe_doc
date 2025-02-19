@@ -1,0 +1,40 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-08-30 05:30:11.835796",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "guest_id",
+  "guest_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "guest_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Guest ID",
+   "options": "Hotel Guests"
+  },
+  {
+   "fetch_from": "guest_id.guest_name",
+   "fieldname": "guest_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Guest Name"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-30 05:35:07.138728",
+ "modified_by": "Administrator",
+ "module": "Jokoor Hotel",
+ "name": "Guest Items",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

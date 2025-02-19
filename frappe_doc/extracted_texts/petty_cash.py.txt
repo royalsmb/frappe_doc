@@ -1,0 +1,96 @@
+# Copyright (c) 2024, Jokoor and contributors
+# For license information, please see license.txt
+
+import frappe
+from frappe.utils import getdate
+
+def execute(filters=None):
+    columns = get_columns()
+    data = get_data(filters)
+    return columns, data
+
+def get_columns():
+    return [
+        {
+            "label": "Date",
+            "fieldname": "date",
+            "fieldtype": "Date",
+            "width": 150
+        },
+        {
+            "label": "Transaction ID",
+            "fieldname": "transaction",
+            "fieldtype": "Link",
+            "options": "Petty Cash Entry",
+            "width": 150
+        },
+        {
+            "label": "Transaction For",
+            "fieldname": "type",
+            "fieldtype": "Data",
+            "width": 200
+        },
+        {
+            "label": "Category",
+            "fieldname": "category",
+            "fieldtype": "Data",
+            "width": 100
+        },
+        {
+            "label": "Amount",
+            "fieldname": "amount",
+            "fieldtype": "Currency",
+            "width": 150
+        },
+        {
+            "label": "Remark",
+            "fieldname": "remark",
+            "fieldtype": "Data",
+            "width": 200
+        },
+        {
+            "label": "Shift",
+            "fieldname": "shift",
+            "fieldtype": "Data",
+            "width": 150
+        },
+        {
+            "label": "Shift Type",
+            "fieldname": "shift_type",
+            "fieldtype": "Data",
+            "width": 100
+        }
+    ]
+
+def get_data(filters):
+    from_date = getdate(filters.get("from_date"))
+    to_date = getdate(filters.get("to_date"))
+    data = []
+    transactions = frappe.get_all("Petty Cash Entry", {"docstatus": 1, "date": ["between", [from_date, to_date]] }, ["*"], order_by="date asc")
+    for transaction in transactions:
+        # Apply filters
+        
+        if filters.get("shift") and filters.get("shift") != transaction.shift:
+            continue
+        if filters.get("type") and filters.get("type") != transaction.type:
+            continue
+        
+        # Determine the correct 'type' value
+        type_value = (
+            transaction.expense_type if transaction.type == "Expense"
+            else transaction.income_type if transaction.type == "Income"
+            else transaction.bank if transaction.type == "Bank Deposit"
+            else ""
+        )
+        
+        data.append({
+            "date": transaction.date,
+            "transaction": transaction.name,
+            "category": transaction.type,
+            "type": type_value,
+            "amount": transaction.amount,
+            "remark": transaction.remark,
+            "shift": transaction.shift,
+            "shift_type": frappe.db.get_value("Front Desk Shift", transaction.shift, "shift_type")
+        })
+    return data

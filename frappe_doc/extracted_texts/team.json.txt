@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "autoname": "format:TEAM-{###}",
+ "creation": "2024-12-15 15:40:18.413443",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "team_leader",
+  "players_count",
+  "status",
+  "column_break_ygbr",
+  "slot",
+  "team_players"
+ ],
+ "fields": [
+  {
+   "fieldname": "team_leader",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Team Leader",
+   "reqd": 1
+  },
+  {
+   "fieldname": "players_count",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Players Count",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Single player\nMulti player",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ygbr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "team_players",
+   "fieldtype": "Table",
+   "label": "Team Players",
+   "options": "Team Players"
+  },
+  {
+   "fieldname": "slot",
+   "fieldtype": "Link",
+   "label": "Slot",
+   "options": "Court Schedule",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-15 17:23:07.616401",
+ "modified_by": "Administrator",
+ "module": "Dinks",
+ "name": "Team",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

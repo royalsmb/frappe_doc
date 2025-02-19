@@ -1,0 +1,143 @@
+import { l as confirmDeleteStore, F as playSound, A as currentOrder, B as updateCurrentOrder, C as recentlyUpdated, e as randomString } from "./fetcher.js";
+import { k as get } from "./exports.js";
+import "./index.js";
+import "./client.js";
+import { f as bind_props, l as ensure_array_like, e as stringify, c as pop, p as push } from "./index2.js";
+import { N as fallback } from "./utils.js";
+import { a as attr, c as clsx } from "./attributes.js";
+import { L as Label } from "./Label.js";
+import { e as escape_html } from "./escaping.js";
+const addProduct = (product, variant) => {
+  if (!product) return;
+  const order = get(currentOrder);
+  if (product.variants?.length && !variant) {
+    return false;
+  }
+  const itemName = variant ? variant.name : product.name;
+  const oldItem = order.items.find((i) => i.name === itemName);
+  if (oldItem) {
+    oldItem.quantity++;
+    updateCurrentOrder({ ...order, items: [...order.items] });
+  } else {
+    const items = [
+      ...order.items,
+      {
+        ...product,
+        name: itemName,
+        product_name: variant?.product_name || product.product_name,
+        price: variant?.price || product.price,
+        quantity: 1
+      }
+    ];
+    updateCurrentOrder({ ...order, items });
+  }
+  recentlyUpdated.set(itemName);
+  playSound("beep");
+  return true;
+};
+const onConfirmDelete = () => {
+  get(confirmDeleteStore)?.action?.();
+  onCancelDelete();
+  playSound("delete");
+};
+const onCancelDelete = () => {
+  confirmDeleteStore.set(void 0);
+};
+function Arrow_up($$payload, $$props) {
+  let klass = fallback($$props["class"], "");
+  $$payload.out += `<svg${attr("class", clsx(klass))} width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.02087 6.64456C1.11339 6.73704 1.22328 6.8104 1.34425 6.86046C1.46522 6.91051 1.59491 6.93628 1.72587 6.93628C1.85684 6.93628 1.98652 6.91051 2.1075 6.86046C2.22847 6.8104 2.33836 6.73704 2.43087 6.64456L6.31087 2.77424L10.1909 6.64456C10.3779 6.83108 10.6314 6.93586 10.8959 6.93586C11.1603 6.93586 11.4139 6.83108 11.6009 6.64456C11.7879 6.45805 11.8929 6.20509 11.8929 5.94132C11.8929 5.67756 11.7879 5.42459 11.6009 5.23808L7.01087 0.659527C6.91836 0.567054 6.80847 0.49369 6.6875 0.443634C6.56652 0.393578 6.43684 0.367813 6.30587 0.367813C6.17491 0.367813 6.04522 0.393578 5.92425 0.443634C5.80328 0.49369 5.69339 0.567055 5.60087 0.659527L1.01087 5.23808C0.630874 5.61713 0.630874 6.25554 1.02087 6.64456Z" fill="currentColor"></path></svg>`;
+  bind_props($$props, { class: klass });
+}
+function Select($$payload, $$props) {
+  push();
+  let selectedName, isUp;
+  let klass = fallback($$props["class"], "");
+  let containerClass = fallback($$props["containerClass"], "");
+  let label = fallback($$props["label"], "");
+  let name = fallback($$props["name"], "Custom Select");
+  let id = fallback($$props["id"], () => randomString(5), true);
+  let bold = fallback($$props["bold"], false);
+  let Icon = fallback($$props["Icon"], void 0);
+  let options = fallback($$props["options"], () => [], true);
+  let clearOnSelect = fallback($$props["clearOnSelect"], false);
+  let value = fallback($$props["value"], () => options?.[0]?.value, true);
+  let position = fallback($$props["position"], "down");
+  let height = fallback($$props["height"], 42);
+  let shadow = fallback($$props["shadow"], false);
+  let hideSelected = fallback($$props["hideSelected"], false);
+  let borderRadius = fallback($$props["borderRadius"], "4px");
+  let onSelect = fallback($$props["onSelect"], void 0);
+  const setSelectedOptionName = (value2) => {
+    const option = options.find((option2) => option2.value == value2) || options?.[0];
+    if (option?.value != value2) value2 = option?.value;
+    return option?.name || option?.text;
+  };
+  const getStyle = (value2) => {
+    return options.find((option) => option.value == value2)?.style;
+  };
+  const getClass = (value2) => {
+    return options.find((option) => option.value == value2)?.class;
+  };
+  hideSelected ? options.filter((option) => option.value != value) : options;
+  selectedName = setSelectedOptionName(value);
+  isUp = position === "up";
+  const each_array = ensure_array_like(options);
+  $$payload.out += `<div${attr("class", clsx(containerClass) + " svelte-eec58r")}${attr("style", `--height:${stringify(height)}px;--border-radius: ${stringify(borderRadius)}`)}>`;
+  if (label) {
+    $$payload.out += "<!--[-->";
+    Label($$payload, { id, text: label });
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--> <div${attr("aria-selected", true)}${attr("aria-label", name)}${attr("class", `relative w-full rounded-[--border-radius] bg-white ${stringify(klass)} ${stringify("closed z-[0]")} svelte-eec58r`)}><select${attr("id", id)}${attr("name", name)} hidden><!--[-->`;
+  for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+    let option = each_array[$$index];
+    $$payload.out += `<option${attr("value", option.value)}>${escape_html(option.name || option.text)}</option>`;
+  }
+  $$payload.out += `<!--]--></select> <button type="button"${attr("class", `relative z-[1] flex h-[--height] w-full items-center justify-between gap-[0.4375rem] whitespace-nowrap border border-transparent px-[0.833125rem] text-base not-italic leading-[140%] text-secondary outline-none focus:border-accent ${stringify(getClass(value))} ${stringify("rounded-[--border-radius]")} svelte-eec58r ${stringify([
+    bold ? "font-semibold" : "",
+    shadow ? "shadow" : ""
+  ].filter(Boolean).join(" "))}`)}${attr("style", getStyle(value))}><span class="flex items-center gap-[0.4375rem]">`;
+  if (Icon) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<!---->`;
+    Icon?.($$payload, {});
+    $$payload.out += `<!---->`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--> ${escape_html(selectedName)}</span> `;
+  Arrow_up($$payload, {
+    class: `shrink-0 transition-transform duration-[350ms] ${stringify("rotate-180")}`
+  });
+  $$payload.out += `<!----></button> <div${attr("class", `absolute left-0 z-[0] w-full rounded-[--border-radius] border border-solid bg-inherit ${stringify("border-light")} flex overflow-hidden ${stringify(isUp ? "bottom-0 flex-col-reverse" : "top-0 flex-col")}`)}><div class="h-[calc(var(--height)-2px)] w-full"></div> `;
+  {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--></div></div></div>`;
+  bind_props($$props, {
+    class: klass,
+    containerClass,
+    label,
+    name,
+    id,
+    bold,
+    Icon,
+    options,
+    clearOnSelect,
+    value,
+    position,
+    height,
+    shadow,
+    hideSelected,
+    borderRadius,
+    onSelect
+  });
+  pop();
+}
+export {
+  Select as S,
+  onConfirmDelete as a,
+  addProduct as b,
+  onCancelDelete as o
+};

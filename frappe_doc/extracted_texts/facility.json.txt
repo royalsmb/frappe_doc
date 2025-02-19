@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:facility_id",
+ "creation": "2024-07-30 15:16:39.144034",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "facility_id",
+  "facility_name",
+  "image",
+  "charge_duration",
+  "charge",
+  "column_break_coga",
+  "description",
+  "facility_type",
+  "location",
+  "section_break_pukg",
+  "review",
+  "overview"
+ ],
+ "fields": [
+  {
+   "fieldname": "facility_name",
+   "fieldtype": "Data",
+   "label": "Facility Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "Image"
+  },
+  {
+   "fieldname": "column_break_coga",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "facility_type",
+   "fieldtype": "Link",
+   "label": "Facility Type",
+   "options": "Facility Type"
+  },
+  {
+   "fieldname": "facility_id",
+   "fieldtype": "Data",
+   "label": "Facility ID",
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "description": "Write the number in minutes for the duration to be charge against the fee, e.g: 30 for 30 minutes and 60 for 1 hours",
+   "fieldname": "charge_duration",
+   "fieldtype": "Data",
+   "label": "Charge Duration"
+  },
+  {
+   "fieldname": "review",
+   "fieldtype": "Rating",
+   "label": "Review"
+  },
+  {
+   "fieldname": "section_break_pukg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "overview",
+   "fieldtype": "Text Editor",
+   "label": "Overview"
+  },
+  {
+   "description": "The amounts of credit charge against the time set",
+   "fieldname": "charge",
+   "fieldtype": "Data",
+   "label": "Charge"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Location"
+  }
+ ],
+ "image_field": "image",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-08-12 06:45:10.279140",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Facility",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "facility_name"
+}

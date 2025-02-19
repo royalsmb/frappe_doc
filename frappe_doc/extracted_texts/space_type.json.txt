@@ -1,0 +1,78 @@
+{
+ "actions": [],
+ "autoname": "format:{type_name}",
+ "creation": "2024-07-25 22:26:54.422646",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "type_name",
+  "column_break_oeen",
+  "default_capacity",
+  "section_break_wmoq",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "type_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Type Name",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_oeen",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_capacity",
+   "fieldtype": "Data",
+   "label": "Default Capacity"
+  },
+  {
+   "fieldname": "section_break_wmoq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-07-27 08:31:56.546666",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Space Type",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Space User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

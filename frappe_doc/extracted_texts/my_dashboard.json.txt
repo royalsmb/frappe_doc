@@ -1,0 +1,25 @@
+{
+ "cards": [
+  {
+   "card": "Today Transfers"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Transfers",
+   "width": "Half"
+  }
+ ],
+ "creation": "2023-04-28 22:40:59.059139",
+ "dashboard_name": "My Dashboard",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2023-04-28 22:42:29.041380",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "My Dashboard",
+ "owner": "Administrator"
+}

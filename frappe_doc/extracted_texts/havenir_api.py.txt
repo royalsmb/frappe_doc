@@ -1,0 +1,286 @@
+import frappe
+from frappe.model.document import Document
+from erpnext.accounts.utils import get_balance_on
+import json
+from frappe.utils import flt, cint
+
+@frappe.whitelist()
+def get_sales_invoice(guest):
+    invoices = frappe.db.sql(f"""  SELECT name FROM 'tabSales Inovice' WHERE customer={guest} """, as_dict=True)
+    frappe.msgprint(invoices)
+    # return invoices
+
+@frappe.whitelist()
+def get_unpaid():
+    #get all guests
+    guests = frappe.db.get_list('Hotel Guests', fields=['name', 'balance'])
+    for guest in guests:
+        balance = get_balance_on(
+            party_type='Customer',
+            party=guest.name
+        )
+        guest.balance = balance
+        guest.save()
+@frappe.whitelist()
+def check_in(doc):
+    doc = frappe.get_doc("Reservation", doc)
+    doc.db_set('status', 'To Check In')
+    for room in doc.rooms:
+        if room.room_status == 'Checked In':
+            frappe.throw(f'Room {room.room_no} is already checked in')
+    check_in_doc = frappe.new_doc('Hotel Check In')
+    check_in_doc.guest_id = doc.guest_id
+    check_in_doc.check_in = doc.arrival_date
+    check_in_doc.guest_name = doc.guest_name
+    check_in_doc.posting_date = nowdate()
+    check_in_doc.duration = (getdate(doc.departure) - getdate(doc.arrival_date)).days
+    check_in_doc.channel = doc.channel
+    check_in_doc.company = doc.company
+    for room in doc.rooms:
+        check_in_doc.append('rooms', {
+            'room_no': room.room_no
+        })
+    check_in_doc.save()
+    check_in_doc.submit()
+    doc.status = 'Checked In'
+    doc.save()
+    
+
+    # return invoices
+@frappe.whitelist()
+def create_invoice(doc, method=None):
+    doc = frappe.get_doc("Reservation", doc)
+    if doc.invoice_created:
+        frappe.msgprint("Invoice already created for this reservation")
+    else:
+        sales_invoice_doc = frappe.new_doc("Sales Invoice")
+        company = frappe.get_doc("Company", doc.company)
+        sales_invoice_doc.discount_amount = 0
+        sales_invoice_doc.customer = doc.guest_id
+        sales_invoice_doc.custom_reservation_id = doc.name
+        sales_invoice_doc.due_date = doc.departure
+        sales_invoice_doc.debit_to = company.default_receivable_account
+
+        total_amount = 0
+        for room in doc.rooms:
+            room_price = room.price
+            total_amount += float(room_price)
+            sales_invoice_doc.append(
+                "items",
+                {
+                    "item_code": f'Room - {room.room_no}',
+                    "qty": float(doc.duration),
+                    "rate": float(room_price),
+                    "amount": float(room_price)*float(doc.duration),
+                },
+            )
+        sales_invoice_doc.insert(ignore_permissions=True)
+        sales_invoice_doc.submit()
+        frappe.db.set_value('Reservation', doc.name, 'invoice_created', 1)
+
+    @frappe.whitelist()
+    def check_in_reservation(source_name, target_doc=None):
+        reservation = frappe.get_doc('Reservation', source_name)
+        for room in reservation.rooms:
+            room_doc = frappe.get_doc('Rooms', room.room_no)
+            room_doc.append('reservations', {
+                'reservation_id': reservation.name,
+                'arrival_date': reservation.arrival_date,
+                'departure': reservation.departure,
+                'guest_name': reservation.guest_name,
+            })
+            room_doc.save()
+        reservation.status = 'To Check In'
+        reservation.save()
+    
+    #return a list of reservation
+@frappe.whitelist()
+def get_reservation():
+    return frappe.get_list('Reservation')
+    #return a list of rooms
+@frappe.whitelist()
+def get_rooms():
+    return frappe.get_list('Rooms', fields=['*'])
+
+#return a list of Check In
+@frappe.whitelist()
+def get_check_in():
+    return frappe.get_list('Hotel Check In', fields=['*'])
+
+@frappe.whitelist()
+def create_daily_report():
+    check_in = frappe.db.count('Hotel Check In', {'check_in': frappe.utils.today()})
+    available_rooms = frappe.db.count('Rooms', {'room_status': 'Available'})
+    checked_in = frappe.db.count('Rooms', {'room_status': 'Checked In'})
+    daily_report = frappe.new_doc("Daily Report")
+    daily_report.date = frappe.utils.today()
+    daily_report.bookings = check_in
+    daily_report.available_rooms = available_rooms
+    daily_report.checked_in = checked_in
+    daily_report.save()
+    frappe.db.commit()
+    return checked_in
+
+# @frappe.whitelist()
+# def create_work_order(doc, method=None):
+#     inv = frappe.get_doc("Sales Invoice", doc)
+#     for item in inv.items:
+#         item_doc = frappe.get_doc("Item", item.item_code)
+#         bom = frappe.get_list('BOM', filters={'item': item.item_code, 'is_default': 1}, fields=['name'])        
+#         if bom:
+#             work_order = frappe.new_doc("Work Order")
+#             work_order.production_item = item.item_code
+#             work_order.qty = item.qty
+#             work_order.bom_no = bom[0].name
+#             work_order.skip_transfer = 1
+#             work_order.fg_warehouse = frappe.get_value('BOM', bom[0].name, 'custom_fg_warehouse')
+#             work_order.insert(ignore_permissions=True)
+#             work_order.save()
+#             work_order.submit()
+#             frappe.db.commit()
+
+@frappe.whitelist()
+def get_posting_date():
+    doc =frappe.get_doc("Hotel Check In", "CHK-IN-2024-00029")
+    return frappe.utils.getdate(doc.check_in)
+
+@frappe.whitelist()
+def get_last_doc():
+    return frappe.get_last_doc("Company").name
+@frappe.whitelist()
+def create_customer():
+    non = 5
+    return frappe.get_doc("Customer", {'custom_passport_no': '1234', 'custom_phone_number': ' '})
+
+@frappe.whitelist()
+def create_work_order(doc, method=None):
+    from erpnext.manufacturing.doctype.work_order.work_order import make_stock_entry
+    for item in doc.items:
+        item_doc = frappe.get_doc("Item", item.item_code)
+        if item_doc.default_bom:
+            bom_doc = frappe.get_doc("BOM", item_doc.default_bom)
+            wo = frappe.new_doc("Work Order")
+            wo.company = frappe.get_last_doc("Company").name
+            wo.production_item = item.item_code
+            wo.item_name = item.item_name
+            wo.qty = item.qty
+            wo.bom_no = item_doc.default_bom
+            for bom_item in bom_doc.items:
+                wo.append("required_items", {
+                    'item_code': bom_item.item_code,
+                    'required_qty': bom_item.qty,
+                    'rate': bom_item.rate,
+                    'include_item_in_manufacturing': 1,
+
+                })
+            wo.skip_transfer = 1
+            wo.fg_warehouse = 'Stores - R'
+            wo.insert(ignore_permissions=True)
+            wo.submit()
+            make_stock_entry(wo.name, "Material Transfer for Manufacture")
+            create_stock_entry(wo.name)
+            frappe.db.set_value("Work Order", wo.name, "status", "Completed")
+            frappe.db.commit()
+
+
+@frappe.whitelist()
+def create_stock_entry(work_order_id):
+    from erpnext.manufacturing.doctype.work_order.work_order import make_stock_entry
+    wo = frappe.get_doc("Work Order", work_order_id)
+    bom = frappe.get_doc("BOM", wo.bom_no)
+    entry = make_stock_entry(work_order_id, "Manufacture")
+    
+    # Ensure the entry is created successfully
+    if not entry:
+        frappe.throw("Failed to create stock entry from work order")
+
+    se = frappe.new_doc("Stock Entry")
+    se.stock_entry_type = entry.get('stock_entry_type')
+    se.purpose = entry.get('purpose')
+    se.work_order = entry.get('work_order')
+    se.from_bom = 1
+    se.use_multi_level_bom = 1
+    se.bom_no = entry.get('bom_no')
+    se.company = entry.get('company')
+    se.posting_date = entry.get('posting_date')
+    se.posting_time = entry.get('posting_time')
+    se.bom_no = entry.get('bom_no')
+    se.fg_completed_qty = entry.get('fg_completed_qty')
+    se.is_opening = entry.get('is_opening')
+
+    # Make sure items are copied correctly
+    if get_items(work_order_id):
+        se.items = []
+        for item in get_items(work_order_id):
+            se.append('items', item)
+    se.append("items", {
+        "t_warehouse": wo.fg_warehouse,
+        "item_code": wo.production_item,
+        "is_finished_item": 1,
+        "qty": wo.qty,
+        "basic_rate": frappe.db.get_value("BOM", wo.bom_no, "raw_material_cost"),
+        "uom": frappe.db.get_value("Item", wo.production_item, "stock_uom"),
+        "use_serial_batch_fields": 1,
+        "expense_account": "Stock Adjustment - R"
+
+        
+    }
+    )
+    
+    se.insert(ignore_permissions=True)
+    se.submit()
+    frappe.db.commit()
+    return {"status": "success", "message": "Stock entry created successfully"}
+
+@frappe.whitelist()
+def get_items(work_order_id):
+    from erpnext.manufacturing.doctype.work_order.work_order import make_stock_entry
+    entry = make_stock_entry(work_order_id, "Material Transfer for Manufacture")
+    data = []
+    for item in entry.get("items"):
+        item_doc = frappe.get_doc("Item", item.item_code)
+        df = item.item_defaults
+        data.append({
+            "s_warehouse": get_item_default_wh(item.item_code),
+            "item_code": item.item_code,
+            "item_name": item.item_name,
+            "qty": item.qty,
+            "transfer_qty": item.transfer_qty,
+            "uom": item.uom,
+            "basic_rate": item.basic_rate,
+            "valuation_rate": item.valuation_rate,
+            "basic_amount": item.basic_amount,
+            "amount": item.amount,
+            "actual_qty":item.actual_qty
+        })
+    return data
+
+
+@frappe.whitelist()
+def get_item_default_wh(item_code):
+    item = frappe.get_doc("Item", item_code)
+    if item.item_defaults:
+        return item.item_defaults[0].default_warehouse
+
+@frappe.whitelist(allow_guest=True)
+def file(encoded_file):
+    import base64
+    # Decode the base64 encoded file
+    missing_padding = len(encoded_file) % 4
+    if missing_padding:
+        encoded_file += '=' * (4 - missing_padding)
+    file_content = base64.b64decode(encoded_file)
+    
+    # Create a new file document in Frappe
+    _file = frappe.get_doc({
+        "doctype": "File",
+        "file_name": 'test.jpg',
+        "is_private": 0,
+        "content": file_content
+    })
+    
+    # Insert the file document into the database
+    _file.save()
+    frappe.db.commit()  
+    
+    return _file.as_dict()

@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-02-16 03:30:59.050623",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "transaction_type",
+  "mto",
+  "bureau",
+  "branch",
+  "agent",
+  "amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "transaction_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Transaction Type"
+  },
+  {
+   "fieldname": "mto",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "MTO"
+  },
+  {
+   "fieldname": "agent",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Agent",
+   "options": "Agent"
+  },
+  {
+   "fieldname": "bureau",
+   "fieldtype": "Link",
+   "label": "Bureau",
+   "options": "Bureau"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch",
+   "options": "Branch"
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-02-23 06:13:15.154315",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Transactions",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Green",
+   "title": "Payout"
+  },
+  {
+   "color": "Blue",
+   "title": "Send Money"
+  },
+  {
+   "color": "Orange",
+   "title": "Buy Currency"
+  },
+  {
+   "color": "Yellow",
+   "title": "Sell Currency"
+  }
+ ]
+}

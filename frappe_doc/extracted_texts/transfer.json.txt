@@ -1,0 +1,201 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SE-TR-{####}",
+ "creation": "2023-05-03 22:08:34.437545",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "transfer_details_section",
+  "date",
+  "reference_number",
+  "column_break_yamwc",
+  "mto",
+  "sender_full_name",
+  "recipient_details_section",
+  "customer",
+  "recepient_phone_number",
+  "recepient_email",
+  "column_break_orsz2",
+  "address",
+  "id_type",
+  "id_numer",
+  "invoice_information_section",
+  "amount",
+  "column_break_ofk7k",
+  "cost_information_section",
+  "agent_name",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "transfer_details_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_standard_filter": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "reference_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reference Number"
+  },
+  {
+   "fieldname": "column_break_yamwc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mto",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "MTO",
+   "options": "MTO"
+  },
+  {
+   "fieldname": "sender_full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sender "
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Recipient",
+   "unique": 1
+  },
+  {
+   "fieldname": "recepient_phone_number",
+   "fieldtype": "Data",
+   "label": "Recipient Phone Number"
+  },
+  {
+   "fieldname": "recepient_email",
+   "fieldtype": "Data",
+   "label": "Recipient Email"
+  },
+  {
+   "fieldname": "column_break_orsz2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address"
+  },
+  {
+   "fieldname": "id_type",
+   "fieldtype": "Select",
+   "label": "ID Type",
+   "options": "\nNation ID\nDriver's Licience\nPassport",
+   "reqd": 1
+  },
+  {
+   "fieldname": "id_numer",
+   "fieldtype": "Data",
+   "label": "ID Numer"
+  },
+  {
+   "fieldname": "invoice_information_section",
+   "fieldtype": "Section Break",
+   "label": "Invoice Information"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Amount",
+   "non_negative": 1,
+   "options": "Company:company:default_currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ofk7k",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "cost_information_section",
+   "fieldtype": "Section Break",
+   "label": "Cost Information"
+  },
+  {
+   "fieldname": "agent_name",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Agent",
+   "options": "Agent",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Transfer",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "recipient_details_section",
+   "fieldtype": "Section Break",
+   "label": "Recipient Details"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-02-16 04:36:47.031921",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Transfer",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Agent",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

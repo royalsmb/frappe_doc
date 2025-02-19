@@ -1,0 +1,59 @@
+{
+ "actions": [],
+ "creation": "2025-02-16 10:34:12.865083",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "front",
+  "column_break_fsdf",
+  "back",
+  "section_break_tyhy",
+  "tags",
+  "difficulty"
+ ],
+ "fields": [
+  {
+   "fieldname": "front",
+   "fieldtype": "Markdown Editor",
+   "in_list_view": 1,
+   "label": "Front"
+  },
+  {
+   "fieldname": "column_break_fsdf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "back",
+   "fieldtype": "Markdown Editor",
+   "in_list_view": 1,
+   "label": "Back"
+  },
+  {
+   "fieldname": "section_break_tyhy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "tags",
+   "fieldtype": "Data",
+   "label": "Tags"
+  },
+  {
+   "fieldname": "difficulty",
+   "fieldtype": "Data",
+   "label": "Difficulty"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-02-16 12:43:04.535810",
+ "modified_by": "Administrator",
+ "module": "Utgbuddy",
+ "name": "Flashcard",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

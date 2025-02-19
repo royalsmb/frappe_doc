@@ -1,0 +1,117 @@
+import { o as current_component, e as stringify, f as bind_props, c as pop, p as push } from "./index2.js";
+import { e as randomString } from "./fetcher.js";
+import { N as fallback } from "./utils.js";
+import { a as attr, c as clsx } from "./attributes.js";
+import "clsx";
+import { L as Label } from "./Label.js";
+import { e as escape_html } from "./escaping.js";
+function onDestroy(fn) {
+  var context = (
+    /** @type {Component} */
+    current_component
+  );
+  (context.d ??= []).push(fn);
+}
+function Search($$payload) {
+  $$payload.out += `<svg aria-hidden="true" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>`;
+}
+function X_circle($$payload) {
+  $$payload.out += `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18ZM10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM12.59 6L10 8.59L7.41 6L6 7.41L8.59 10L6 12.59L7.41 14L10 11.41L12.59 14L14 12.59L11.41 10L14 7.41L12.59 6Z" fill="#94A3B8"></path></svg>`;
+}
+function AutoCompleteSearch($$payload, $$props) {
+  push();
+  let klass = fallback($$props["class"], "");
+  let label = fallback($$props["label"], "");
+  let noResultText = fallback($$props["noResultText"], "No result found. Try another keyword");
+  let required = fallback($$props["required"], false);
+  let liClass = fallback($$props["liClass"], "");
+  let bold = fallback($$props["bold"], false);
+  let id = fallback($$props["id"], () => randomString(5), true);
+  let Icon = fallback($$props["Icon"], void 0);
+  let shadow = fallback($$props["shadow"], false);
+  let placeholder = fallback($$props["placeholder"], "start typing...");
+  let clearOnSelect = fallback($$props["clearOnSelect"], false);
+  let canAddKeyword = fallback($$props["canAddKeyword"], false);
+  let fontSize = fallback($$props["fontSize"], 14);
+  let height = fallback($$props["height"], 42);
+  let borderRadius = fallback($$props["borderRadius"], "4px");
+  let containerClass = fallback($$props["containerClass"], "");
+  let search = $$props["search"];
+  let onClickSelect = fallback($$props["onClickSelect"], void 0);
+  let onCloseSelect = fallback($$props["onCloseSelect"], void 0);
+  let onAdd = fallback($$props["onAdd"], void 0);
+  let keyword = fallback($$props["keyword"], "");
+  let keywordPlaceholder = "";
+  let errorMessage = "";
+  let selectedResult;
+  function onBur() {
+    if (keyword || keywordPlaceholder || !required) {
+      errorMessage = "";
+    } else errorMessage = "Value cannot be empty";
+  }
+  const close = () => {
+    onBur();
+    if (onCloseSelect) onCloseSelect(keyword && selectedResult?.name == keyword ? selectedResult : void 0);
+  };
+  close();
+  if (keyword && errorMessage) onBur();
+  $$payload.out += `<div${attr("class", clsx(containerClass) + " svelte-lac1sd")}>`;
+  if (label) {
+    $$payload.out += "<!--[-->";
+    Label($$payload, { id, text: label });
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--> <div${attr("style", `--original-font-size: ${stringify(fontSize)};--height:${stringify(height)}px;--border-radius: ${stringify(borderRadius)};`)}${attr("class", `booking-item relative bg-white ${stringify(klass)} ${stringify("z-[0]")} svelte-lac1sd`)}><div${attr("class", `relative z-[1] flex h-[--height] w-full items-center justify-between border px-4 transition-all duration-200 focus-within:border-accent ${stringify(errorMessage ? "rounded-t-[--border-radius] border-attention" : "rounded-[--border-radius] border-transparent hover:border-gray-300")} svelte-lac1sd ${stringify([shadow ? "shadow" : ""].filter(Boolean).join(" "))}`)}><span class="block w-[21px] text-gray-400">`;
+  Search($$payload);
+  $$payload.out += `<!----></span> <input${attr("value", keyword)}${attr("required", required, true)} type="text"${attr("placeholder", placeholder)}${attr("class", `w-[inherit] truncate !border-none text-secondary !outline-none transition-all duration-200 placeholder:text-gray-400 focus:outline-none ${stringify(keyword ? "!w-[calc(100%-20px)]" : "")} svelte-lac1sd ${stringify([bold ? "font-semibold" : ""].filter(Boolean).join(" "))}`)}> `;
+  if (keyword) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<button class="z-[1] border-none outline-none transition-opacity duration-200 hover:opacity-70 focus:outline-none">`;
+    X_circle($$payload);
+    $$payload.out += `<!----></button>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--></div> `;
+  if (errorMessage) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<div class="mt-[2px] text-sm leading-[18px] text-attention">${escape_html(errorMessage)}</div>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--> <div${attr("class", `absolute left-0 z-[0] w-full rounded-[--border-radius] border-solid bg-inherit ${stringify("border border-light")} top-0 flex flex-col overflow-hidden`)}><div class="h-[calc(var(--height)-2px)] w-full"></div> `;
+  {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--></div></div></div>`;
+  bind_props($$props, {
+    class: klass,
+    label,
+    noResultText,
+    required,
+    liClass,
+    bold,
+    id,
+    Icon,
+    shadow,
+    placeholder,
+    clearOnSelect,
+    canAddKeyword,
+    fontSize,
+    height,
+    borderRadius,
+    containerClass,
+    search,
+    onClickSelect,
+    onCloseSelect,
+    onAdd,
+    keyword
+  });
+  pop();
+}
+export {
+  AutoCompleteSearch as A,
+  Search as S,
+  onDestroy as o
+};

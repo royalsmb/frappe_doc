@@ -1,0 +1,133 @@
+import frappe
+from frappe import _
+from frappe.core.utils import find
+from frappe.utils import flt, cint
+@frappe.whitelist()
+def get_all_items(company=None):
+    try:
+        shift = frappe.get_value("POS Shift", {"status": "Open", "owner": frappe.session.user}, "pos_profile")
+        pos_profile = frappe.get_doc("POS Profile", shift)
+        comapny = pos_profile.company
+        
+        data = []
+        filters = {"disabled": 0, "variant_of": ""}
+        
+        
+        if pos_profile.item_groups:
+            item_groups = frappe.get_all("POS Item Group", {"parent": pos_profile.name}, pluck="item_group")
+            filters["item_group"] = ["in", item_groups]
+
+        items = get_items(filters=filters)
+        
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": items
+        })
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("Failed to fetch items"))
+        frappe.local.response.update({
+            "http_status_code": 500,
+            "error": str(e)
+        })
+@frappe.whitelist()      
+def get_items(filters):
+    warehouse = get_warehouse()
+    
+    items = frappe.get_all("Item", filters=filters, order_by="name")
+    data = []
+    for item in items:
+        item_doc = frappe.get_doc("Item", item.name)
+        item_price = flt(frappe.get_value("Item Price", {"item_code": item.name}, "price_list_rate"))
+        qty = frappe.db.get_value("Bin", {"item_code": item.item_name, "warehouse": warehouse}, "actual_qty")
+
+        if item_doc.has_variants:
+            varaint_items = []
+            variants = frappe.get_all("Item", filters={"variant_of": item.name}, fields=["name", "item_code", "item_name", "item_group"], order_by="name", limit_page_length=20)
+            from_price = 0
+            total_variant_qty = 0
+            for variant in variants:
+                qty = frappe.db.get_value("Bin", {"item_code": variant.item_code, "warehouse": warehouse}, "actual_qty")
+                total_variant_qty += flt(qty)
+                variant_price = flt(frappe.get_value("Item Price", {"item_code": variant.name}, "price_list_rate"))
+                if variant_price > from_price:
+                    from_price = variant_price
+                varaint_items.append({
+                    "name": variant.name,
+                    "product_name": variant.item_name,
+                    "price": variant_price if variant_price == 0 else item_price,
+                    "qty": qty
+                })
+            data.append({
+                "name": item.name,
+                "product_name": item_doc.item_name,
+                "category": item_doc.item_group,
+                "price": from_price,
+                "description": item_doc.description or "",
+                "image": frappe.utils.get_url(item_doc.image) if item_doc.image else "",
+                "is_stock": True if cint(frappe.db.get_value("Item", item_doc.item_name, "is_stock_item")) == 1 else False,
+                "warehouse": warehouse,
+                "from_price": from_price,
+                "variants": varaint_items,
+                "qty": total_variant_qty
+            })
+        else:
+            # if item_doc.variant_of:
+            #     continue
+            data.append({
+                "name": item.name,
+                "product_name": item_doc.item_name,
+                "category": item_doc.item_group,
+                "price": item_price,
+                "description": item_doc.description or "",
+                "image": frappe.utils.get_url(item_doc.image) if item_doc.image else "",
+                "is_stock": True if cint(frappe.db.get_value("Item", item_doc.item_name, "is_stock_item")) == 1 else False,
+                "qty": qty or 0,
+                "warehouse": warehouse
+            
+
+            })
+    return data
+
+
+@frappe.whitelist(allow_guest=True)
+def get_food_items():
+    try:
+        warehouse = get_warehouse()
+        items = frappe.get_all("Food Item", fields=["name", "item_name", "item_group", "item_price", "description", "image", "maintain_stock"], order_by="name")
+        data = []
+        for item in items:
+            qty = frappe.db.get_value("Bin", {"item_code": item.item_name, "warehouse": warehouse}, "actual_qty")
+            data.append({
+                "name": item.name,
+                "product_name": item.item_name,
+                "category": item.item_group,
+                "price": item.item_price,
+                "description": item.description,
+                "image": frappe.utils.get_url(item.image) if item.image else "",
+                "is_stock": True if cint(frappe.db.get_value("Item", item.item_name, "is_stock_item")) == 1 else False,
+                "qty": qty or 0,
+                "warehouse": warehouse
+            })
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": data
+        })
+    except frappe.DoesNotExistError as e:
+        frappe.local.response.update({
+            "http_status_code": 404,
+            "error": e
+        })
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Custom Error Log")
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": e
+        })
+@frappe.whitelist()
+def get_warehouse(cookie_warehouse=None):
+    pos_profile = frappe.get_value("POS Shift", {"user": frappe.session.user, "status": "Open"}, "pos_profile") or "Restaurant" # Todo: remove hardcoded value
+
+    if not cookie_warehouse:
+        return frappe.get_value("POS Profile", pos_profile, "warehouse")
+
+    return cookie_warehouse

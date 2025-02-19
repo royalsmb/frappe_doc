@@ -1,0 +1,136 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-06 18:01:51.785801",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "full_name",
+  "email",
+  "customer",
+  "image",
+  "status",
+  "date_of_birth",
+  "vehicle_number",
+  "column_break_kjbe",
+  "mobile",
+  "occupation",
+  "designation",
+  "abbr",
+  "password",
+  "is_admin"
+ ],
+ "fields": [
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "Image"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "Pending\nActive\nInactive\nRejected"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "vehicle_number",
+   "fieldtype": "Data",
+   "label": "Vehicle Number"
+  },
+  {
+   "fieldname": "column_break_kjbe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "label": "Mobile",
+   "unique": 1
+  },
+  {
+   "fieldname": "occupation",
+   "fieldtype": "Data",
+   "label": "Occupation"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "abbr",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Abbr"
+  },
+  {
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "label": "Password"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_admin",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Admin"
+  }
+ ],
+ "image_field": "image",
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-06 18:01:51.785801",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Employees",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Yellow",
+   "title": "Pending"
+  },
+  {
+   "color": "Green",
+   "title": "Active"
+  },
+  {
+   "color": "Gray",
+   "title": "Inactive"
+  },
+  {
+   "color": "Red",
+   "title": "Rejected"
+  }
+ ],
+ "title_field": "full_name"
+}

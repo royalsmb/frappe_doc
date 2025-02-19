@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:NT-{###}",
+ "creation": "2025-01-25 14:37:07.708011",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "note"
+ ],
+ "fields": [
+  {
+   "fieldname": "note",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Note"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-25 14:39:13.666009",
+ "modified_by": "Administrator",
+ "module": "Jokoor Restaurant",
+ "name": "Food Note",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "note",
+ "translated_doctype": 1
+}

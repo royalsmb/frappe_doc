@@ -1,0 +1,252 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SE-SL-{####} ",
+ "creation": "2023-05-06 15:56:17.737695",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "transfer_details_section",
+  "date",
+  "column_break_yamwc",
+  "sender_information_section",
+  "customer",
+  "recepient_phone_number",
+  "recepient_email",
+  "column_break_orsz2",
+  "address",
+  "id_type",
+  "id_numer",
+  "invoice_information_section",
+  "currency",
+  "rate",
+  "exchange_rate",
+  "currency_name",
+  "column_break_ofk7k",
+  "amount",
+  "total",
+  "column_break_tr4be",
+  "cost_information_section",
+  "agent_name",
+  "branch",
+  "agent_full_name",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "transfer_details_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_standard_filter": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "column_break_yamwc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "sender_information_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Details"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer "
+  },
+  {
+   "fieldname": "recepient_phone_number",
+   "fieldtype": "Data",
+   "label": "Customer Phone Number",
+   "precision": "0"
+  },
+  {
+   "fieldname": "recepient_email",
+   "fieldtype": "Data",
+   "label": "Customer Email"
+  },
+  {
+   "fieldname": "column_break_orsz2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address"
+  },
+  {
+   "fieldname": "id_type",
+   "fieldtype": "Select",
+   "label": "ID Type",
+   "options": "\nNational ID\nPassport\nDriver's Licience"
+  },
+  {
+   "fieldname": "id_numer",
+   "fieldtype": "Data",
+   "label": "ID Numer"
+  },
+  {
+   "fieldname": "invoice_information_section",
+   "fieldtype": "Section Break",
+   "label": "Invoice Information"
+  },
+  {
+   "default": "USD",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "label": "Currecny to Sell",
+   "options": "Currency"
+  },
+  {
+   "fetch_from": "amended_from.rate",
+   "fieldname": "exchange_rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Selling Rate",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "currency.currency_name",
+   "fieldname": "currency_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Currency Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ofk7k",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Float",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Amount",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "default": "0.00",
+   "fieldname": "total",
+   "fieldtype": "Currency",
+   "label": "Total To Receive",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_tr4be",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "cost_information_section",
+   "fieldtype": "Section Break",
+   "label": "Cost Information"
+  },
+  {
+   "fieldname": "agent_name",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Agent",
+   "options": "Agent",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fetch_from": "agent_name.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "agent_name.full_name",
+   "fieldname": "agent_full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Agent"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Sales",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Sales",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "currency.exchange_rate",
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate",
+   "precision": "2"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-06 17:17:42.223749",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Sales",
+ "name_case": "Title Case",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Agent",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

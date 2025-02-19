@@ -1,0 +1,37 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-09-25 01:09:42.475715",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "facility_name",
+  "icon"
+ ],
+ "fields": [
+  {
+   "fieldname": "facility_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Facility Name"
+  },
+  {
+   "fieldname": "icon",
+   "fieldtype": "Attach Image",
+   "label": "Icon"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-09-25 01:12:55.366016",
+ "modified_by": "Administrator",
+ "module": "Dinks",
+ "name": "Location Facilities",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

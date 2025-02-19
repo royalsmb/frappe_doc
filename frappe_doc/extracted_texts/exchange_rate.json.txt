@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:currency_code",
+ "creation": "2023-05-04 16:18:54.304232",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "name1",
+  "currency_code",
+  "column_break_mwgwq",
+  "currency_symbol",
+  "exchange_rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "label": "Name"
+  },
+  {
+   "fieldname": "currency_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Currency Code",
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_mwgwq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "currency_symbol",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Currency Symbol"
+  },
+  {
+   "fieldname": "exchange_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Exchange Rate",
+   "precision": "2",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-05-04 16:20:31.064371",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Exchange Rate",
+ "name_case": "UPPER CASE",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

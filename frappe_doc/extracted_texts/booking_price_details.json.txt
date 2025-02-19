@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-03 20:16:13.846604",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "slot_category",
+  "rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Rate"
+  },
+  {
+   "fieldname": "slot_category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Slot Category",
+   "options": "Morning\nAfternoon\nEvening"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-05 06:02:26.515426",
+ "modified_by": "Administrator",
+ "module": "Dinks",
+ "name": "Booking Price Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,109 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SE-ITR-{####}",
+ "creation": "2023-05-02 07:10:23.627973",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "from_account",
+  "to_account",
+  "column_break_htwpa",
+  "date",
+  "amount",
+  "amended_from",
+  "rate"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "from_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "From Account",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_htwpa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Internal Transfer",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "to_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "To Account",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Data",
+   "label": "Rate"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-05-07 02:04:10.350576",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Internal Transfer",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Agent",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

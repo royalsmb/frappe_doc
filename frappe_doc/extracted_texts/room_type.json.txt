@@ -1,0 +1,155 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "field:type",
+ "creation": "2020-01-29 12:45:13.379092",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "type",
+  "bed_type",
+  "price",
+  "room_amenities",
+  "color",
+  "column_break_2",
+  "number_of_adults",
+  "number_of_child",
+  "number_of_extra_adults",
+  "pricing_unit",
+  "image"
+ ],
+ "fields": [
+  {
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "label": "Type",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Price",
+   "options": "Currency",
+   "precision": "2"
+  },
+  {
+   "fieldname": "pricing_unit",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Pricing Unit",
+   "options": "Per Night\nPer Hour"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "Image"
+  },
+  {
+   "fieldname": "bed_type",
+   "fieldtype": "Select",
+   "label": "Bed Type",
+   "options": "\nSingle\nDouble\nTriple\nQuad\nQueen\nKing\nOther"
+  },
+  {
+   "default": "1",
+   "fieldname": "number_of_adults",
+   "fieldtype": "Data",
+   "label": "Number Of Adults",
+   "length": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "number_of_child",
+   "fieldtype": "Data",
+   "label": "Number Of Child",
+   "length": 1,
+   "reqd": 1
+  },
+  {
+   "description": "With additional charge",
+   "fieldname": "number_of_extra_adults",
+   "fieldtype": "Data",
+   "label": "Number Of Extra Adults",
+   "reqd": 1
+  },
+  {
+   "fieldname": "room_amenities",
+   "fieldtype": "Table MultiSelect",
+   "label": "Room Amenities",
+   "options": "Room Amenities"
+  },
+  {
+   "fieldname": "color",
+   "fieldtype": "Color",
+   "label": "Color"
+  }
+ ],
+ "image_field": "image",
+ "links": [],
+ "modified": "2025-02-03 08:13:24.582684",
+ "modified_by": "Administrator",
+ "module": "Jokoor Hotel",
+ "name": "Room Type",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Item Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

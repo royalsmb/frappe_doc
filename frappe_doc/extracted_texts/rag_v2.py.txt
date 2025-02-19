@@ -1,0 +1,40 @@
+
+
+from typing import Optional
+
+from agno.agent import Agent, AgentMemory
+from agno.embedder.openai import OpenAIEmbedder
+from agno.embedder.google import GeminiEmbedder
+from agno.knowledge import AgentKnowledge
+from agno.memory.db.postgres import PgMemoryDb
+from agno.models.anthropic import Claude
+from agno.models.google import Gemini
+from agno.models.openai import OpenAIChat
+from agno.storage.agent.postgres import PostgresAgentStorage
+from agno.tools.duckduckgo import DuckDuckGoTools
+from agno.vectordb.pgvector import PgVector
+from agno.knowledge.pdf_url import PDFUrlKnowledgeBase
+from agno.vectordb.pgvector import PgVector, SearchType
+
+db_url = "postgresql://neondb_owner:npg_FIHQ24iOyCob@ep-young-night-a8nio0y1-pooler.eastus2.azure.neon.tech/neondb?sslmode=require"
+
+
+
+knowledge_base = PDFUrlKnowledgeBase(
+    urls=["https://agno-public.s3.amazonaws.com/recipes/ThaiRecipes.pdf"],
+    vector_db=PgVector(table_name="recipes", db_url=db_url, search_type=SearchType.hybrid),
+)
+# Load the knowledge base: Comment out after first run
+knowledge_base.load(recreate=True, upsert=True)
+
+agent = Agent(
+    model=Gemini(id="gemini-2.0-flash-exp"),
+    knowledge=knowledge_base,
+    # Add a tool to read chat history.
+    read_chat_history=True,
+    show_tool_calls=True,
+    markdown=True,
+    # debug_mode=True,
+)
+agent.print_response("How do I make chicken and galangal in coconut milk soup", stream=True)
+agent.print_response("What was my last question?", stream=True)

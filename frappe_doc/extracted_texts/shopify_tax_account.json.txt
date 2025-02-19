@@ -1,0 +1,50 @@
+{
+ "actions": [],
+ "creation": "2015-10-05 16:55:20.455371",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "shopify_tax",
+  "column_break_2",
+  "tax_account",
+  "tax_description"
+ ],
+ "fields": [
+  {
+   "fieldname": "shopify_tax",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Shopify Tax/Shipping Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tax_account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "ERPNext Account",
+   "options": "Account",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tax_description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tax Description",
+   "translatable": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2021-06-05 10:52:18.427400",
+ "modified_by": "Administrator",
+ "module": "shopify",
+ "name": "Shopify Tax Account",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

@@ -1,0 +1,31 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-15 15:43:59.776833",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "player_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "player_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Player ID"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-12-15 15:44:18.583335",
+ "modified_by": "Administrator",
+ "module": "Dinks",
+ "name": "Team Players",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

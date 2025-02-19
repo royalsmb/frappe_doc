@@ -1,0 +1,292 @@
+{
+ "actions": [],
+ "autoname": "format:{return_type}-{return_period}-{gstin}",
+ "creation": "2024-07-06 08:47:55.801429",
+ "default_view": "List",
+ "description": "Keeps the log of GST Returns filed by GSTIN and Period",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "filing_summary_section",
+  "filing_status",
+  "return_period",
+  "company",
+  "return_type",
+  "is_nil",
+  "column_break_sqwh",
+  "filing_date",
+  "acknowledgement_number",
+  "gstin",
+  "generation_status",
+  "section_break_oisv",
+  "unfiled",
+  "filed",
+  "upload_error",
+  "column_break_hxfu",
+  "unfiled_summary",
+  "filed_summary",
+  "authenticated_summary",
+  "computed_data_section",
+  "is_latest_data",
+  "section_break_emlz",
+  "books",
+  "column_break_ehcm",
+  "books_summary",
+  "reconciled_data_section",
+  "reconcile",
+  "column_break_ndup",
+  "reconcile_summary",
+  "pending_request_info_section",
+  "actions"
+ ],
+ "fields": [
+  {
+   "fieldname": "filing_summary_section",
+   "fieldtype": "Section Break",
+   "label": "Filing Summary"
+  },
+  {
+   "fieldname": "filing_status",
+   "fieldtype": "Data",
+   "label": "Filing Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "return_period",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Return Period",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_sqwh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "filing_date",
+   "fieldtype": "Date",
+   "label": "Filing Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "acknowledgement_number",
+   "fieldtype": "Data",
+   "label": "Acknowledgement Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gstin",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "GSTIN",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "generation_status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Generation Status",
+   "options": "\nIn Progress\nGenerated\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_oisv",
+   "fieldtype": "Section Break",
+   "label": "Government Data"
+  },
+  {
+   "fieldname": "unfiled",
+   "fieldtype": "Attach",
+   "label": "Unfiled Invoices",
+   "read_only": 1
+  },
+  {
+   "fieldname": "filed",
+   "fieldtype": "Attach",
+   "label": "Filed Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hxfu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "unfiled_summary",
+   "fieldtype": "Attach",
+   "label": "Unfiled Summary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "filed_summary",
+   "fieldtype": "Attach",
+   "label": "Filed Summary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "computed_data_section",
+   "fieldtype": "Section Break",
+   "hide_border": 1,
+   "label": "Computed Data"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_latest_data",
+   "fieldtype": "Check",
+   "label": "Is Latest Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_emlz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "books",
+   "fieldtype": "Attach",
+   "label": "Books Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ehcm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "books_summary",
+   "fieldtype": "Attach",
+   "label": "Books Summary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reconciled_data_section",
+   "fieldtype": "Section Break",
+   "label": "Reconciled Data"
+  },
+  {
+   "fieldname": "reconcile",
+   "fieldtype": "Attach",
+   "label": "Reconcile GSTR-1",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ndup",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reconcile_summary",
+   "fieldtype": "Attach",
+   "label": "Reconcile Summary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "return_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Return Type",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "upload_error",
+   "fieldtype": "Attach",
+   "label": "Upload Error Data",
+   "read_only": 1
+  },
+  {
+   "fieldname": "authenticated_summary",
+   "fieldtype": "Attach",
+   "label": "Authenticated Summary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pending_request_info_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "actions",
+   "fieldtype": "Table",
+   "label": "Actions",
+   "options": "GSTR Action",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_nil",
+   "fieldtype": "Check",
+   "label": "Is Nil Return",
+   "read_only": 1
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Integration Request",
+   "link_fieldname": "reference_docname"
+  }
+ ],
+ "modified": "2025-01-10 08:19:45.848389",
+ "modified_by": "Administrator",
+ "module": "GST India",
+ "name": "GST Return Log",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Auditor",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

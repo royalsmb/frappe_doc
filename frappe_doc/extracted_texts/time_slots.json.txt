@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:slot",
+ "creation": "2024-10-02 15:56:47.418655",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "slot",
+  "slot_category",
+  "amended_from",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "slot",
+   "fieldtype": "Data",
+   "label": "Slot",
+   "unique": 1
+  },
+  {
+   "fieldname": "slot_category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Slot Category",
+   "options": "Morning\nAfternoon\nEvening",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Time Slots",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "amended_from.slot_category",
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "label": "Status"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-10-02 16:19:23.266813",
+ "modified_by": "Administrator",
+ "module": "Dinks",
+ "name": "Time Slots",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Green",
+   "title": "Morning"
+  },
+  {
+   "color": "Yellow",
+   "title": "Afternoon"
+  },
+  {
+   "color": "Pink",
+   "title": "Evening"
+  }
+ ]
+}

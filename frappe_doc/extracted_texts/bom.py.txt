@@ -1,0 +1,78 @@
+
+import frappe
+import erpnext
+
+
+def deduct_bom_stock(doc, method=None):
+    try:
+        items = []
+        stock_entry = frappe.new_doc("Stock Entry")
+        stock_entry.stock_entry_type = "Material Receipt" if doc.is_return else "Material Issue"
+        company = frappe.get_doc("Company", doc.company)
+        stock_entry.company = company.name
+        for item in doc.items:
+            if frappe.db.exists(
+                "BOM", {"item_name": item.item_code, "is_active": 1, "is_default": 1, "company": doc.company}
+                ) and frappe.db.get_value("Item", item.item_code, "composite_item"):
+                bom = frappe.db.get_value(
+                    "BOM", {"item_name": item.item_code, "is_active": 1, "is_default": 1}, "name")
+                if bom:
+                    
+                    bom_items = frappe.get_all(
+                        "BOM Item", filters={"parent": bom}, fields=["item_code", "qty"])
+                    
+                    
+                    
+                    for bom_item in bom_items:
+                        warehouse = item.get("source_warehouse") or get_default_warehouse(bom_item.item_code, company.name)
+                        if doc.is_return:
+                            stock_entry.append("items", {
+                                "item_code": bom_item.item_code,
+                                "qty": abs(bom_item.qty * item.qty),
+                                "t_warehouse": warehouse if warehouse else doc.set_warehouse
+                            })
+                        else:
+                            stock_entry.append("items", {
+                                "item_code": bom_item.item_code,
+                                "qty": bom_item.qty * item.qty,
+                                "s_warehouse": warehouse if warehouse else doc.set_warehouse
+                            })
+        if stock_entry.items:
+            
+            
+            
+            
+            stock_entry.insert(ignore_permissions=True)
+            stock_entry.submit()
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Custom Error Log")
+        frappe.throw(str(e))
+
+
+@frappe.whitelist()
+def get_bom_items(item_code):
+    item = frappe.get_doc("Item", item_code)
+    item_rate = frappe.db.get_value(
+        "Item Price", {"item_code": item_code,
+                       "price_list": "Standard Buying"},
+        "price_list_rate") or item.valuation_rate
+    uom = item.stock_uom
+    return {
+        "item_code": item_code,
+        "item_name": item.item_name,
+        "item_rate": item_rate,
+        "uom": uom
+    }
+
+
+@frappe.whitelist()
+def get_default_warehouse(item_code, company=None):
+    if frappe.db.exists("Item Default", {"parent": item_code}):
+        warehouse = frappe.db.get_value(
+            "Item Default", {"parent": item_code}, "default_warehouse")
+        return warehouse
+    else:
+        if not company:
+            company = erpnext.get_default_company()
+        abbr = frappe.db.get_value("Company", company, "abbr")
+        return f"Stores - {abbr}"

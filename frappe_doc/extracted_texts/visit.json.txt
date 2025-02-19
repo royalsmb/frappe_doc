@@ -1,0 +1,132 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:VISITOR_{##}",
+ "creation": "2024-08-18 07:07:08.828067",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "space_id",
+  "visitor_name",
+  "visitor_email",
+  "status",
+  "image",
+  "purpose",
+  "column_break_ihon",
+  "company",
+  "visitor_mobile",
+  "visit_date",
+  "visit_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "visitor_name",
+   "fieldtype": "Data",
+   "label": "Visitor Name"
+  },
+  {
+   "fieldname": "visit_date",
+   "fieldtype": "Date",
+   "label": "Visit Date"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
+   "fieldname": "space_id",
+   "fieldtype": "Link",
+   "label": "Space",
+   "options": "Space"
+  },
+  {
+   "fieldname": "visitor_email",
+   "fieldtype": "Data",
+   "label": "Visitor Email"
+  },
+  {
+   "fieldname": "visitor_mobile",
+   "fieldtype": "Data",
+   "label": "Visitor Mobile"
+  },
+  {
+   "fieldname": "visit_time",
+   "fieldtype": "Time",
+   "label": "Visist Time"
+  },
+  {
+   "fieldname": "column_break_ihon",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Pending\nAccepted\nRejected"
+  },
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Data",
+   "label": "purpose"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-08 04:26:34.734849",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Visit",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Space Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Space User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

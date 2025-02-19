@@ -1,0 +1,82 @@
+// Copyright (c) 2024, erpera and contributors
+// For license information, please see license.txt
+
+frappe.ui.form.on("Customer Employees", {
+    refresh(frm) {
+        // Add Approve and Reject buttons if the status is Pending
+        if (frm.doc.status == "Pending") {
+            frm.add_custom_button(__("Approve"), function() {
+                frappe.call({
+                    method: "wsc.utils.approve_customer_employee",
+                    args: {
+                        id: frm.doc.name,
+                    },
+                    callback: function(r) {
+                        frm.reload_doc();
+                    }
+                });
+            }, __("Action"));
+
+            frm.add_custom_button(__("Reject"), function() {
+                frappe.call({
+                    method: "wsc.utils.reject_customer_employee",
+                    args: {
+                        id: frm.doc.name,
+                    },
+                    callback: function(r) {
+                        frm.reload_doc();
+                    }
+                });
+            }, __("Action"));
+        }
+
+        // Add Disable button if the status is Active
+        if (frm.doc.status == "Active") {
+            frm.add_custom_button(__("Disable"), function() {
+                frappe.call({
+                    method: "wsc.utils.disable_customer_employee",
+                    args: {
+                        id: frm.doc.name,
+                        email: frm.doc.email,
+                    },
+                    callback: function(r) {
+                        frm.reload_doc();
+                    }
+                });
+            });
+        }
+
+        // Add Enable button if the status is Inactive
+        if (frm.doc.status == "Inactive") {
+            frm.add_custom_button(__("Enable"), function() {
+                frappe.call({
+                    method: "wsc.utils.enable_customer_employee",
+                    args: {
+                        id: frm.doc.name,
+                        email: frm.doc.email,
+                    },
+                    callback: function(r) {
+                        frm.reload_doc();
+                    }
+                });
+            });
+        }
+    },
+    
+    customer: function(frm) {
+        // Set the abbr if the customer is set
+        frappe.call({
+            method: "wsc.utils.api.get_customer_abbr",
+            args: {
+                customer: frm.doc.customer
+            },
+            callback: function(r) {
+                if (r.message) {
+                    frm.set_value("abbr", r.message);
+                    // Refresh the field
+                    frm.refresh_field("abbr");
+                }
+            }
+        });
+    }
+});

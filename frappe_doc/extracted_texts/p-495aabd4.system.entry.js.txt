@@ -1,0 +1,4 @@
+/*!
+ * (C) Ionic http://ionicframework.com - MIT License
+ */
+System.register(["./p-2c1408df.system.js","./p-4609d030.system.js","./p-638865d1.system.js"],(function(t){"use strict";var n,s,e,c,o;return{setters:[function(t){n=t.r;s=t.h;e=t.H},function(t){c=t.c},function(t){o=t.b}],execute:function(){var r=":host(.ion-color){color:var(--ion-color-base)}";var i=r;var u=t("ion_text",function(){function t(t){n(this,t);this.color=undefined}t.prototype.render=function(){var t;var n=o(this);return s(e,{key:"4330b56cbc4e15953d9b3162fb40af728a8195dd",class:c(this.color,(t={},t[n]=true,t))},s("slot",{key:"ec674a71d8fbb04d537fd79d617d9db4a607c340"}))};return t}());u.style=i}}}));

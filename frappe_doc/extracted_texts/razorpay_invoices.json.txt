@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-02 18:42:19.356171",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "razorpay_invoice_id",
+  "sales_invoice",
+  "payment_link"
+ ],
+ "fields": [
+  {
+   "fieldname": "razorpay_invoice_id",
+   "fieldtype": "Data",
+   "label": "Razorpay Invoice ID"
+  },
+  {
+   "fieldname": "sales_invoice",
+   "fieldtype": "Link",
+   "label": "Sales Invoice",
+   "options": "Sales Invoice"
+  },
+  {
+   "fieldname": "payment_link",
+   "fieldtype": "Data",
+   "label": "Payment Link"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-10-02 18:43:49.269581",
+ "modified_by": "Administrator",
+ "module": "Dinks",
+ "name": "Razorpay Invoices",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

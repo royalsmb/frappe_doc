@@ -1,0 +1,24 @@
+// Copyright (c) 2024, jokoor and contributors
+// For license information, please see license.txt
+
+frappe.ui.form.on("SMS", {
+	refresh(frm) {
+
+	},
+    sms_template: function(frm) {
+        if (frm.doc.sms_template) {
+            frappe.call({
+                method: "jsms.utils.get_template_content",
+                args: {
+                    template_id: frm.doc.sms_template
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frm.set_value("message", r.message)
+                        frm.refresh_field("message")
+                    }
+                }
+            })
+        }
+    }
+});

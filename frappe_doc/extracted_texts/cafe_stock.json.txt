@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "CS-.#####",
+ "creation": "2024-07-26 01:41:33.593089",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "item",
+  "quantity",
+  "column_break_xmld",
+  "unit_of_measure",
+  "stock_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Data",
+   "label": "Quantity"
+  },
+  {
+   "fetch_from": "item.weight_uom",
+   "fieldname": "unit_of_measure",
+   "fieldtype": "Data",
+   "label": "Unit of Measure"
+  },
+  {
+   "fieldname": "column_break_xmld",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "stock_date",
+   "fieldtype": "Date",
+   "label": "Stock Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-07-26 01:45:25.323556",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Cafe Stock",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

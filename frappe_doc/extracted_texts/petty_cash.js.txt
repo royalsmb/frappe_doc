@@ -1,0 +1,39 @@
+// Copyright (c) 2024, Jokoor and contributors
+// For license information, please see license.txt
+let openin_balance = "GMD7000";
+frappe.query_reports["Petty Cash"] = {
+
+	"filters": [
+
+		{
+			"fieldname": "from_date",
+			"label": __("From Date"),
+			"fieldtype": "Date",
+			"default": frappe.datetime.add_months(frappe.datetime.get_today(), -1)
+		},
+		{
+			"fieldname": "to_date",
+			"label": __("To Date"),
+			"fieldtype": "Date",
+			"default": frappe.datetime.get_today()
+		},
+		// category 
+		{
+			"fieldname": "type",
+			"label": __("Category"),
+			"fieldtype": "Select",
+			"options": ["", "Expense", "Income"],
+		},
+		// shift order by asc
+		{
+			"fieldname": "shift",
+			"label": __("Shift"),
+			"fieldtype": "Link",
+			"options": "Front Desk Shift",
+
+
+		},
+		// heading
+		
+	]
+};

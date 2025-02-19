@@ -1,0 +1,31 @@
+// Copyright (c) 2024, Jokoor and contributors
+// For license information, please see license.txt
+
+frappe.ui.form.on("Petty Cash Entry", {
+    setup(frm) {
+        // if forms is new 
+        if (frm.doc.__islocal) {
+            frappe.call({
+                method:"jokoor_hotel.api.validate_shift",
+                args: {
+                    "doc": frm.doc.name
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frm.set_value("shift", r.message);
+                        frm.refresh_field("shift");
+                    }
+                    else {
+                        frappe.throw("No active shift found");
+                        
+                    }
+                }
+            });
+
+        }
+
+	},
+// 	refresh(frm) {
+
+// 	},
+});

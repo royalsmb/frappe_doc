@@ -1,0 +1,75 @@
+// Copyright (c) 2024, Jokoor and contributors
+// For license information, please see license.txt
+
+frappe.query_reports["Room Sales"] = {
+	"filters": [
+
+		{
+			"fieldname": "from_date",
+			"label": __("From Date"),
+			"fieldtype": "Date",
+			// default is august 1, 2024
+			"default": frappe.datetime.add_months(frappe.datetime.get_today(), -1)
+		},
+		{
+			"fieldname": "to_date",
+			"label": __("To Date"),
+			"fieldtype": "Date",
+			"default": frappe.datetime.get_today()
+		},
+		
+		// room
+		{
+			"fieldname": "room",
+			"label": __("Room"),
+			"fieldtype": "Link",
+			"options": "Rooms"
+		},
+		// room type
+		{
+			"fieldname": "room_type",
+			"label": __("Room Type"),
+			"fieldtype": "Link",
+			"options": "Room Type"
+		},
+		// payment status
+		{
+			"fieldname": "payment_status",
+			"label": __("Payment Status"),
+			"fieldtype": "Select",
+			"options": ["", "Paid", "Unpaid", "Partial", "Overdue"]
+		},
+		// booking satus 
+		{
+			"fieldname": "booking_status",
+			"label": __("Booking Status"),
+			"fieldtype": "Select",
+			"options": ["", "Checked In", "Checked Out"]
+		},
+		// channel
+		{
+			"fieldname": "channel",
+			"label": __("Channel"),
+			"fieldtype": "Link",
+			"options": "Channel"
+		},
+	],
+	"formatter": function(value, row, column, data, default_formatter) {
+		if (column.fieldname == "payment_status") {
+			if (value == "Paid") {
+				value = `<b style="color:green">${value}</b>`
+			}
+			else if (value == "Unpaid") {
+				value = `<b style="color:orange">${value}</b>`
+			}
+			else if (value == "Partial") {
+				value = `<b style="color:yellow">${value}</b>`
+			}
+			else if (value == "Overdue") {
+				value = `<b style="color:red">${value}</b>`
+			}
+			
+		}
+		return default_formatter(value, row, column, data);
+	}
+};

@@ -1,0 +1,19 @@
+{
+ "content": null,
+ "creation": "2024-08-24 06:25:53.258277",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2024-08-24 06:25:53.258277",
+ "modified_by": "Administrator",
+ "module": "Jokoor Hotel",
+ "name": "bookings",
+ "owner": "Administrator",
+ "page_name": "bookings",
+ "roles": [],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Bookings"
+}

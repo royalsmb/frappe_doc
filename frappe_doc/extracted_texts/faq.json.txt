@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:TCKT_{##}",
+ "creation": "2024-08-18 07:27:25.468850",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "space_id",
+  "question",
+  "answer"
+ ],
+ "fields": [
+  {
+   "fieldname": "question",
+   "fieldtype": "Data",
+   "label": "Question"
+  },
+  {
+   "fieldname": "answer",
+   "fieldtype": "Small Text",
+   "label": "Answer"
+  },
+  {
+   "fieldname": "space_id",
+   "fieldtype": "Link",
+   "label": "Space",
+   "options": "Space"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-08-18 07:33:24.603689",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "FAQ",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

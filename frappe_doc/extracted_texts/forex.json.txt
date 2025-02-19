@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:forex_name",
+ "creation": "2023-05-07 01:48:28.890475",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "forex_name",
+  "rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "forex_name",
+   "fieldtype": "Data",
+   "label": "Forex Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Float",
+   "label": "Rate"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-05-07 01:48:47.994767",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Forex",
+ "name_case": "UPPER CASE",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

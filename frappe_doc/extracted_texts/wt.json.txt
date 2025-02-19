@@ -1,0 +1,112 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-07-11 14:08:03.864873",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "template",
+  "sample_values",
+  "column_break_8skda",
+  "template_name",
+  "category",
+  "header_type",
+  "header",
+  "sample",
+  "footer",
+  "id",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "template",
+   "fieldtype": "Code",
+   "in_list_view": 1,
+   "label": "Template",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sample_values",
+   "fieldtype": "HTML Editor",
+   "label": "Sample Values"
+  },
+  {
+   "fieldname": "column_break_8skda",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "template_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Template Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Category",
+   "options": "\nTRANSACTIONAL\nMARKETING\nOTP\nUTILITY\nAUTHENTICATION",
+   "reqd": 1
+  },
+  {
+   "fieldname": "header_type",
+   "fieldtype": "Select",
+   "label": "Header Type",
+   "options": "\nTEXT\nDOCUMENT\nIMAGE"
+  },
+  {
+   "fieldname": "header",
+   "fieldtype": "Data",
+   "label": "Header"
+  },
+  {
+   "fieldname": "sample",
+   "fieldtype": "Data",
+   "label": "Sample"
+  },
+  {
+   "fieldname": "footer",
+   "fieldtype": "Data",
+   "label": "Footer"
+  },
+  {
+   "fieldname": "id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "ID"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "label": "Status"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-07-11 14:09:44.905576",
+ "modified_by": "Administrator",
+ "module": "Royalsmb",
+ "name": "WT",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

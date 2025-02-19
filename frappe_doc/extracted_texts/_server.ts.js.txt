@@ -1,0 +1,12 @@
+const GET = async ({ params, cookies }) => {
+  cookies.set("sid", params.sid, {
+    path: "/",
+    maxAge: 36e3,
+    sameSite: "strict",
+    secure: true
+  });
+  return new Response(JSON.stringify({ sid: params.sid }));
+};
+export {
+  GET
+};

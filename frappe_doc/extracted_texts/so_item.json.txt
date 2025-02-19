@@ -1,0 +1,392 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-17 07:24:33.265791",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_bbdz",
+  "column_break_ekaf",
+  "product",
+  "item",
+  "type",
+  "assign_order",
+  "office",
+  "new_york",
+  "india",
+  "column_break_dstm",
+  "shape",
+  "order_status",
+  "export_number",
+  "order_item_id",
+  "order_type",
+  "purchase_order",
+  "standared",
+  "delivery_date",
+  "delivery_date_buffering",
+  "column_break_kpun",
+  "sieve",
+  "remarks_and_instructions",
+  "mmct",
+  "maxct",
+  "sizemm",
+  "total_cts",
+  "total_pcs",
+  "color",
+  "color_description",
+  "color_code_description",
+  "color_intensity",
+  "calarity",
+  "cuts",
+  "polish",
+  "symmetry",
+  "fluorescence",
+  "laboratory",
+  "quantity",
+  "pcs_quantity",
+  "size_section",
+  "sieve_size",
+  "column_break_yzut",
+  "data_jppm",
+  "length",
+  "w",
+  "total_mm_tolerance",
+  "column_break_ayhp",
+  "minimum_crate",
+  "minimum_crate_copy",
+  "maximum_crate"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_bbdz",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_ekaf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Diamond Type",
+   "options": "\nLab Grown Diamond\nNatural Diamond"
+  },
+  {
+   "depends_on": "eval:parent.accepted_rejected==\"Accepted\"",
+   "fieldname": "product",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Product",
+   "options": "\nDiamond\nJewelry\nSemi-Mounts\nMountings"
+  },
+  {
+   "depends_on": "eval:doc.item==\"Lab Grown Diamond\"",
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type",
+   "options": "\nCVD\nHPHT\nAny"
+  },
+  {
+   "fieldname": "shape",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Shape",
+   "options": "\nRound\nEmerald\nOval\nPear\nMarquise\nPrincess\nRadiant\nSquare Radiant\nAsscher\nStraight Baguette\nTapered Baguette\nBullet\nCadillac\nHexagon\nLong Hexagon\nOctagon\nHalf Moon\nKite\nPentagon\nLozenge\nHeart\nCalf Head\nCushion\nLong Cushion\nCaree Cut\nHorse Head\nTrapezoid (Brilliant Cut)\nTrapezoid (Step Cut)\nTrilliant Brilliant Cut\nTrilliant Step Cut\nTriangle Brilliant Cut\nTriangle Step Cut\nAlphabets (A,B,C, etc)\nNumbers (1,2,3, etc)\nAny Other Shape/Cut"
+  },
+  {
+   "fieldname": "column_break_dstm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "color",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Color",
+   "options": "White\nFancy"
+  },
+  {
+   "depends_on": "eval:parent.item==\"Lab Grown Diamond\"",
+   "fieldname": "sieve",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sieve Size",
+   "options": "+0000-000\n+000-00\n+00-0\n+0-1\n+1-1.5\n+1.5-2\n+2-2.5\n+2.5-3\n+3-3.5\n+3.5-4\n+4-4.5\n+4.5-5\n+5-5.5\n+5.5-6\n+6-6.5\n+6.5-7\n+7-7.5\n+7.5-8\n+8-8.5\n+8.5-9\n+9-9.5\n+9.5-10\n+10-10.5\n+10.5-11\n+11-11.5\n+11.5-12\n+12-12.5\n+12.5-13\n+13-13.5\n+13.5-14\n+14-14.5\n+14.5-15\n+15-15.5"
+  },
+  {
+   "fieldname": "maxct",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Maximum Ct"
+  },
+  {
+   "fieldname": "sizemm",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "MM Size"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "remarks_and_instructions",
+   "fieldtype": "Data",
+   "is_virtual": 1,
+   "label": "Remarks and Instructions"
+  },
+  {
+   "depends_on": "eval:doc.color=='White'",
+   "fieldname": "color_description",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Color Description",
+   "options": "\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\nP\nQ\nR\nS\nT\nU\nV\nW\nX\nY\nZ"
+  },
+  {
+   "depends_on": "eval:doc.color=='Fancy'",
+   "fieldname": "color_code_description",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Color Code Description ",
+   "options": "\nPink\nYellow\nBlue\nGreen\nRed\nBlack"
+  },
+  {
+   "depends_on": "eval:doc.color=='Fancy'",
+   "fieldname": "color_intensity",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Color Intensity",
+   "options": "\nFancy Deep\nFancy Dark\nFancy Vivid\nFancy Intense\nFancy\nVery Light\nFancy Light\nLight\nFaint"
+  },
+  {
+   "fieldname": "polish",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Polish",
+   "options": "\nEx/Ideal\nVery Good\nGood\nFair\nPoor\nNone"
+  },
+  {
+   "fieldname": "symmetry",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Symmetry",
+   "options": "\nEx/Ideal\nVery Good\nGood\nFair\nPoor\nNone"
+  },
+  {
+   "depends_on": "eval:doc.color=='Natural Diamond'",
+   "fieldname": "fluorescence",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Fluorescence",
+   "options": "\nNone\nFaint\nMedium\nStrong\nV Strong"
+  },
+  {
+   "fieldname": "laboratory",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Laboratory",
+   "options": "\nNONE\nIGI\nGIA\nEGL\nGCAL\nAGS\nHRD\nSGL\nGSI"
+  },
+  {
+   "depends_on": "eval:doc.product=='Diamond'",
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Carats Quantity"
+  },
+  {
+   "fieldname": "pcs_quantity",
+   "fieldtype": "Data",
+   "label": "Pcs Quantity"
+  },
+  {
+   "fieldname": "column_break_kpun",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_cts",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Total Cts"
+  },
+  {
+   "fieldname": "total_pcs",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Total Pcs"
+  },
+  {
+   "fieldname": "size_section",
+   "fieldtype": "Section Break",
+   "label": "Size"
+  },
+  {
+   "fieldname": "sieve_size",
+   "fieldtype": "Select",
+   "label": "Sieve Size",
+   "options": "\n+0000-000\n+000-00\n+00-0\n+0-1\n+1-1.5\n+1.5-2\n+2-2.5\n+2.5-3\n+3-3.5\n+3.5-4\n+4-4.5\n+4.5-5\n+5-5.5\n+5.5-6\n+6-6.5\n+6.5-7\n+7-7.5\n+7.5-8\n+8-8.5\n+8.5-9\n+9-9.5\n+9.5-10\n+10-10.5\n+10.5-11\n+11-11.5\n+11.5-12\n+12-12.5\n+12.5-13\n+13-13.5\n+13.5-14\n+14-14.5\n+14.5-15\n+15-15.5"
+  },
+  {
+   "fieldname": "column_break_yzut",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.shape!=\"Round\"",
+   "fieldname": "data_jppm",
+   "fieldtype": "Data",
+   "label": "MM Size"
+  },
+  {
+   "fieldname": "length",
+   "fieldtype": "Data",
+   "label": "Length"
+  },
+  {
+   "fieldname": "w",
+   "fieldtype": "Data",
+   "label": "Width"
+  },
+  {
+   "fieldname": "column_break_ayhp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "minimum_crate",
+   "fieldtype": "Data",
+   "label": "Carat Size"
+  },
+  {
+   "fieldname": "maximum_crate",
+   "fieldtype": "Data",
+   "label": "Maximum Carat"
+  },
+  {
+   "fieldname": "minimum_crate_copy",
+   "fieldtype": "Data",
+   "label": "Minimum Carat "
+  },
+  {
+   "depends_on": "eval:doc.shape!=\"Round\"",
+   "fieldname": "total_mm_tolerance",
+   "fieldtype": "Select",
+   "label": "Total MM Tolerance",
+   "options": "+/- 0.10\n+/- 0.20\n+/- 0.30\n+/- 0.40\n+/- 0.50"
+  },
+  {
+   "fieldname": "calarity",
+   "fieldtype": "Table MultiSelect",
+   "label": "Clarity",
+   "options": "Clarity Item"
+  },
+  {
+   "fieldname": "cuts",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Cut",
+   "options": "\nEx/Ideal\nVery Good\nGood\nFair\nPoor\nNone"
+  },
+  {
+   "fieldname": "mmct",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Minimum Ct"
+  },
+  {
+   "fieldname": "assign_order",
+   "fieldtype": "Select",
+   "label": "Assign order",
+   "options": "Fully\nPartially"
+  },
+  {
+   "depends_on": "eval:doc.assign_order==\"Fully\"",
+   "fieldname": "office",
+   "fieldtype": "Select",
+   "label": "Office ",
+   "options": "New York\nIndia"
+  },
+  {
+   "depends_on": "eval:doc.assign_order==\"Partially\" || doc.office==\"New York\"",
+   "fieldname": "new_york",
+   "fieldtype": "Data",
+   "label": "New York"
+  },
+  {
+   "depends_on": "eval:doc.assign_order==\"Partially\" || doc.office==\"India\"",
+   "fieldname": "india",
+   "fieldtype": "Data",
+   "label": "India"
+  },
+  {
+   "fieldname": "order_status",
+   "fieldtype": "Select",
+   "label": "Order Status",
+   "options": "Pending\nFactory\nIndia Office\nExported\nNY Office\nShipped to Client\nDelivered"
+  },
+  {
+   "depends_on": "eval:doc.order_status==\"Exported\"",
+   "fieldname": "export_number",
+   "fieldtype": "Data",
+   "label": "Export Number"
+  },
+  {
+   "fieldname": "order_item_id",
+   "fieldtype": "Data",
+   "label": "Order Item ID"
+  },
+  {
+   "fieldname": "order_type",
+   "fieldtype": "Select",
+   "label": "Order Type",
+   "options": "Refill\norder"
+  },
+  {
+   "depends_on": "eval:doc.order_status==\"Factory\"",
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "label": "Purchase Order",
+   "options": "Purchase Order"
+  },
+  {
+   "fieldname": "standared",
+   "fieldtype": "Select",
+   "label": "Standared",
+   "options": "3X\nVG+"
+  },
+  {
+   "fieldname": "delivery_date",
+   "fieldtype": "Data",
+   "label": "Delivery Date"
+  },
+  {
+   "fieldname": "delivery_date_buffering",
+   "fieldtype": "Data",
+   "label": "Delivery Date Buffering"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-15 21:37:15.825793",
+ "modified_by": "Administrator",
+ "module": "Emergediam",
+ "name": "SO Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

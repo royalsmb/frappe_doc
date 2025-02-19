@@ -1,0 +1,34 @@
+# Copyright (c) 2024, Jokoor and contributors
+# For license information, please see license.txt
+
+from __future__ import unicode_literals
+import frappe
+from frappe.model.document import Document
+
+
+class HotelGuests(Document):
+    def after_insert(self):
+        if not frappe.db.exists("Customer", {"custom_guest_id": self.name}):
+            customer = frappe.new_doc("Customer")
+            customer.guest_name = self.guest_name
+            customer.customer_name = self.guest_name
+            if frappe.db.exists("Custom Field", {"fieldname": "phone"}) and self.phone_no:
+                customer.phone = self.phone_no
+            if frappe.db.exists("Custom Field", {"fieldname": "email"}) and self.email:
+                customer.email = self.email
+            customer.customer_group = "Individual"
+            customer.customer_type = "Individual"
+            customer.territory = "All Territories"
+            customer.custom_guest_id = self.name
+            customer.gender = self.gender
+            customer.insert()
+
+            
+      
+    def on_trash(self):
+        customer = frappe.db.get_value("Customer", {"custom_guest_id": self.name}, "name")
+        if frappe.db.exists("Customer", customer):
+            frappe.delete_doc("Customer", customer)
+
+    # def before_rename(self):
+    #     frappe.db.set_value("Customer", self.email, "name", self.name)

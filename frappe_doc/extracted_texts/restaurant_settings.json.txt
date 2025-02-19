@@ -1,0 +1,97 @@
+{
+ "actions": [],
+ "creation": "2024-12-10 18:21:56.561887",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "allow_multi_warehouse_in_pos",
+  "allow_table_selection_in_pos",
+  "print_settings_tab",
+  "business_name",
+  "print_logo",
+  "contact",
+  "address",
+  "column_break_tpkw",
+  "server_printing",
+  "default_printer"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "allow_multi_warehouse_in_pos",
+   "fieldtype": "Check",
+   "label": "Allow multi warehouse in POS"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_table_selection_in_pos",
+   "fieldtype": "Check",
+   "label": "Allow table selection in POS"
+  },
+  {
+   "fieldname": "print_settings_tab",
+   "fieldtype": "Tab Break",
+   "label": "Print Settings"
+  },
+  {
+   "fieldname": "business_name",
+   "fieldtype": "Data",
+   "label": "Business name"
+  },
+  {
+   "fieldname": "print_logo",
+   "fieldtype": "Attach Image",
+   "label": "Print logo"
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Data",
+   "label": "Contact"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address"
+  },
+  {
+   "fieldname": "column_break_tpkw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "server_printing",
+   "fieldtype": "Check",
+   "label": "Server Printing"
+  },
+  {
+   "depends_on": "eval:doc.server_printing",
+   "fieldname": "default_printer",
+   "fieldtype": "Link",
+   "label": "Default Printer",
+   "options": "Network Printer Settings"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-02-08 10:34:12.817378",
+ "modified_by": "Administrator",
+ "module": "Jokoor Restaurant",
+ "name": "Restaurant Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

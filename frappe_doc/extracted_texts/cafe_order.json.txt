@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "CO-.YYYY.-.#####",
+ "creation": "2024-07-26 01:24:20.446835",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "order_date",
+  "column_break_pjoj",
+  "payment_status",
+  "section_break_hhex",
+  "order_table"
+ ],
+ "fields": [
+  {
+   "fieldname": "order_date",
+   "fieldtype": "Datetime",
+   "label": "Order Date"
+  },
+  {
+   "fieldname": "column_break_pjoj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "Pending\nPaid\nCancalled"
+  },
+  {
+   "fieldname": "section_break_hhex",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "order_table",
+   "fieldtype": "Table",
+   "label": "Order Table",
+   "options": "Order Table"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "User"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-07-26 20:21:08.028651",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Cafe Order",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

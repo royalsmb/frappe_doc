@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "autoname": "format:EB_{###}",
+ "creation": "2024-11-20 01:01:37.093814",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_caou",
+  "event",
+  "user_id",
+  "user",
+  "column_break_ppsz",
+  "date",
+  "mobile",
+  "players"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_caou",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "event",
+   "fieldtype": "Link",
+   "label": "Event",
+   "options": "Dink Event"
+  },
+  {
+   "fieldname": "user_id",
+   "fieldtype": "Data",
+   "label": "User Id"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Data",
+   "label": "User"
+  },
+  {
+   "fieldname": "mobile",
+   "fieldtype": "Data",
+   "label": "Mobile"
+  },
+  {
+   "fieldname": "players",
+   "fieldtype": "Data",
+   "label": "Players"
+  },
+  {
+   "fieldname": "column_break_ppsz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Data",
+   "label": "Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-17 22:10:42.873089",
+ "modified_by": "Administrator",
+ "module": "Dinks",
+ "name": "Event Registration",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

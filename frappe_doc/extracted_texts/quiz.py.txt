@@ -1,0 +1,105 @@
+from utgbuddy.app.agent import agent as _agent
+from typing import Optional
+from textwrap import dedent
+import frappe
+
+@frappe.whitelist(allow_guest=True)
+def generate_quiz(library_id):
+    # Initialize our agent with focus on educational content breakdown
+    agent = _agent(library_id)
+    
+    # Initial content analysis for quiz creation
+    content_analysis_prompt = dedent("""
+    Analyze the educational content with these specific objectives:
+
+    1. Core Concept Identification
+    - Identify key concepts that need to be learned
+    - Break down complex ideas into fundamental components
+    - Map relationships between different concepts
+    - Identify prerequisite knowledge
+
+    2. Learning Optimization
+    - Structure information for maximum retention
+    - Create clear, concise explanations
+    - Identify potential areas of confusion
+
+    3. Question Formation (for quizzes)
+    - Create questions that promote active recall and understanding
+    - Ensure questions are specific and unambiguous
+
+    Provide a detailed analysis that will inform effective quiz creation.
+""")
+
+    # Retrieve relevant documents based on the analysis prompt    
+    retrieved_docs = agent.get_relevant_docs_from_knowledge(
+            content_analysis_prompt,
+            num_documents=3)
+
+    # Generate comprehensive quiz questions    
+    quiz_generation_prompt = dedent(f"""
+    Create a set of effective quiz questions based on the following content:
+
+    Source Material: {retrieved_docs}
+
+    For each concept, create quiz questions that follow these principles:
+
+    1. Question Types to Include:
+    - Multiple Choice Questions (MCQs) with clear distractors 
+    - Short Answer Questions (SAQs) requiring concise answers 
+    - Essay Questions testing deeper understanding 
+
+    2. Content Guidelines:
+    - Break complex concepts into smaller pieces 
+    - Use clear, precise language 
+    - Include visual descriptions when relevant 
+    - Provide context where necessary 
+
+    3. Format each question as:
+    QUESTION [number]
+    Prompt: [question text]
+    Options: [list options if MCQ]  
+    Answer Key: [correct answer(s)]
+
+    Ensure each question:
+    - Tests one specific concept or skill  
+    - Promotes active recall or critical thinking  
+    - Is clear and unambiguous  
+    - Builds on previous knowledge  
+    """)
+
+    # Generate the quiz questions    
+    quiz_questions = agent.run(quiz_generation_prompt, markdown=True).get_content_as_string()
+
+    def save_quiz_questions(content):
+        """
+        Save the generated notes with proper formatting and organization
+        """
+        doc = frappe.get_doc("Student Library", library_id)
+        
+        # Extract title from content
+        # title = content.split('\n')[0].replace('#', '').strip()
+        
+        # doc.title = title
+        doc.quiz_content = content
+        
+        
+        doc.save()
+        frappe.db.commit()
+        
+        return doc
+
+    # Save the generated notes
+    saved_notes = save_quiz_questions(quiz_questions)
+
+    return saved_notes
+@frappe.whitelist(allow_guest=True)
+def enqueue_quiz_generation(library_id: str):
+    """
+    Enqueue the quiz generation task
+    """
+    frappe.enqueue(
+        "utgbuddy.app.quiz.generate_quiz",
+        library_id=library_id,
+        queue="long"
+    )
+    return "Quiz generation task enqueued successfully"

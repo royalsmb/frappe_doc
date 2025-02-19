@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:kitchen_name",
+ "creation": "2024-12-17 16:26:29.630545",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "kitchen_name",
+  "printer_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "kitchen_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Kitchen Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "printer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Printer Name",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-17 02:44:43.445712",
+ "modified_by": "Administrator",
+ "module": "Jokoor Restaurant",
+ "name": "Kitchen Printer",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "kitchen_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "kitchen_name"
+}

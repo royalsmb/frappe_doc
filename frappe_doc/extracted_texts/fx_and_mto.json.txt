@@ -1,0 +1,89 @@
+{
+ "charts": [
+  {
+   "chart_name": "Payout Chart",
+   "label": "Payout Chart"
+  }
+ ],
+ "content": "[{\"id\":\"CxQvh3bfuW\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Payout Chart\",\"col\":12}},{\"id\":\"O4AvI6LA7u\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Transactions <br></b></span>\",\"col\":12}},{\"id\":\"9L0p48SCv_\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Exchange Rates <br></b></span>\",\"col\":12}},{\"id\":\"v_JC5SLApZ\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pound\",\"col\":4}},{\"id\":\"7VyuxM5lcY\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Euro\",\"col\":4}},{\"id\":\"SToGTJqAKu\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"USD\",\"col\":4}},{\"id\":\"L5qOULoNz5\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"Xwz0DlFWxi\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Money Transfer Operators<br></b></span>\",\"col\":12}},{\"id\":\"ugjzlVlNTQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Super Sonics\",\"col\":4}},{\"id\":\"vRnC3M_Ki_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Bayba\",\"col\":4}},{\"id\":\"BAQMmdQv0b\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Soni Transfer\",\"col\":4}},{\"id\":\"PteBbW46fY\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Cash Minute\",\"col\":4}},{\"id\":\"WqtPoQGG3W\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Diamano\",\"col\":4}},{\"id\":\"W3CdEN5fkQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Remit Choice\",\"col\":4}}]",
+ "creation": "2023-10-26 04:46:00.619242",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "expenses",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "FX and MTO",
+ "links": [],
+ "modified": "2024-02-23 03:18:39.418305",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "FX and MTO",
+ "number_cards": [
+  {
+   "label": "Pound",
+   "number_card_name": "Pound"
+  },
+  {
+   "label": "Euro",
+   "number_card_name": "Euro"
+  },
+  {
+   "label": "USD",
+   "number_card_name": "USD"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Bayba",
+   "type": "URL",
+   "url": "https://bayba.simplemts.com/home/index.php"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Super Sonics",
+   "type": "URL",
+   "url": "https://rec.supersonicz.info/"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Diamano",
+   "type": "URL",
+   "url": "https://www.diamanomt.com/V2/magasins/agencyLogin.aspx"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Soni Transfer",
+   "type": "URL",
+   "url": "https://adm.sonitransfer.com/Account/Login?ReturnUrl=%2F"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Remit Choice",
+   "type": "URL",
+   "url": "https://rec.remitchoice.net/"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Cash Minute",
+   "type": "URL",
+   "url": "https://remit.cashminute.com/login.php"
+  }
+ ],
+ "title": "FX and MTO"
+}

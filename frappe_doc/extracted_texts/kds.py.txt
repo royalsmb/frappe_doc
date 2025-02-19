@@ -1,0 +1,155 @@
+import frappe
+from frappe.utils.print_format import print_by_server
+
+"""
+  table: string 
+  orderNumber: string  
+items: Item[]
+status: KOT_STATUS     
+order_id: string     
+kitchen: string
+"""
+@frappe.whitelist(allow_guest=True)
+def print():
+    try:
+        return print_by_server('KOT', "c0gm5rb1rr", "Test", 'Kot Updated')
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Custom Error Log")
+        return e
+
+
+@frappe.whitelist(allow_guest=True)
+def get_all_kots():
+    try:
+        kots = frappe.get_all('KOT')
+        data = []
+        for kot in kots:
+            kot_data = frappe.get_doc('KOT', kot.name)
+            items = []
+            for item in kot_data.items:
+                items.append({
+                    'qty': item.qty,
+                    'name': item.item_code,
+                })
+            data.append({
+                'order_id': kot_data.name,
+                'table': kot_data.table or 'N/A',
+                'order_number': kot_data.order_id,
+                'kitchen': kot_data.kitchen_name,
+                'status': kot_data.status,
+                'items': items
+            })
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": data,
+        })
+    except Exception as e:
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": str(e),
+        })
+
+@frappe.whitelist(allow_guest=True)
+def get_pending_kots():
+    try:
+        kots = frappe.get_all('KOT', filters={'status': 'Pending'})
+        data = []
+        for kot in kots:
+            kot_data = frappe.get_doc('KOT', kot.name)
+            items = []
+            for item in kot_data.items:
+                items.append({
+                    'qty': item.qty,
+                    'name': item.item_code,
+                })
+            data.append({
+                'order_id': kot_data.name,
+                'table': kot_data.table or 'NA',
+                'order_number': kot_data.order_id,
+                'kitchen': kot_data.kitchen_name,
+                'items': items
+            })
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": data,
+        })
+    except Exception as e:
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": str(e),
+        })
+@frappe.whitelist(allow_guest=True)
+def get_started_kots():
+    try:
+        kots = frappe.get_all('KOT', filters={'status': 'Started'})
+        data = []
+        for kot in kots:
+            kot_data = frappe.get_doc('KOT', kot.name)
+            items = []
+            for item in kot_data.items:
+                items.append({
+                    'qty': item.qty,
+                    'name': item.item_code,
+                })
+            data.append({
+                'order_id': kot_data.name,
+                'table': kot_data.table or "NA",
+                'order_number': kot_data.order_id,
+                'kitchen': kot_data.kitchen_name,
+                'items': items
+            })
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": data,
+        })
+    except Exception as e:
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": str(e),
+        })
+        
+
+
+
+@frappe.whitelist(allow_guest=True)
+def update_kot_status():
+    try:
+        data = frappe.local.request.get_json()
+        order_id = data.get('order_id')
+        status = data.get('status')
+        if not order_id:
+            raise Exception("Order ID is required")
+        if not status:
+            raise Exception("Status is required")
+        if not frappe.db.exists('KOT', order_id):
+            raise Exception("Invalid Order ID")
+        kot = frappe.get_doc('KOT', order_id)
+        kot.status = status
+        kot.save()
+        frappe.db.commit()
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "message": "KOT status updated successfully",
+        })
+    except Exception as e:
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": str(e),
+        })
+@frappe.whitelist(allow_guest=True)
+def get_kitchens():
+    try:
+        kitchens = frappe.get_all('KDS', ['kitchen_name'])
+        data = []
+        for kitchen in kitchens:
+            data.append(kitchen.kitchen_name)
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": data,
+        })
+    except Exception as e:
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": str(e),
+        })
+

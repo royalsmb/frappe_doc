@@ -1,0 +1,66 @@
+export const manifest = (() => {
+function __memo(fn) {
+	let value;
+	return () => value ??= (value = fn());
+}
+
+return {
+	appDir: "_app",
+	appPath: "_app",
+	assets: new Set(["baobab.jpg","favicon.png","logo.png","manifest.webmanifest","pwa-192x192.png","pwa-512x512.png","royalsmb logo (192 x 192 px).png","royalsmb logo (512 x 512 px).png","screenshot-1.png","sounds/alert.mp3","sounds/beep.mp3","sounds/cancel.mp3","sounds/chime.mp3","sounds/click.mp3","sounds/delete.mp3","sounds/email.mp3","sounds/error.mp3","sounds/startup.mp3","sounds/submit.mp3","sw.js"]),
+	mimeTypes: {".jpg":"image/jpeg",".png":"image/png",".webmanifest":"application/manifest+json",".mp3":"audio/mpeg",".js":"text/javascript"},
+	_: {
+		client: {"start":"_app/immutable/entry/start.CcbixLx4.js","app":"_app/immutable/entry/app.BCWYow-L.js","imports":["_app/immutable/entry/start.CcbixLx4.js","_app/immutable/chunks/BgPm9Szv.js","_app/immutable/chunks/BmdC9-2Z.js","_app/immutable/entry/app.BCWYow-L.js","_app/immutable/chunks/BmdC9-2Z.js","_app/immutable/chunks/DjkWHii8.js","_app/immutable/chunks/BEN_y2CW.js","_app/immutable/chunks/BkN_-G9U.js","_app/immutable/chunks/DGLH9pEx.js","_app/immutable/chunks/B3YPueWU.js"],"stylesheets":[],"fonts":[],"uses_env_dynamic_public":false},
+		nodes: [
+			__memo(() => import('./nodes/0.js')),
+			__memo(() => import('./nodes/1.js')),
+			__memo(() => import('./nodes/2.js')),
+			__memo(() => import('./nodes/3.js')),
+			__memo(() => import('./nodes/4.js')),
+			__memo(() => import('./nodes/5.js'))
+		],
+		routes: [
+			{
+				id: "/api/[...path]",
+				pattern: /^\/api(?:\/(.*))?\/?$/,
+				params: [{"name":"path","optional":false,"rest":true,"chained":true}],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/api/_...path_/_server.ts.js'))
+			},
+			{
+				id: "/pos",
+				pattern: /^\/pos\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 3 },
+				endpoint: null
+			},
+			{
+				id: "/pos/open-orders",
+				pattern: /^\/pos\/open-orders\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 4 },
+				endpoint: null
+			},
+			{
+				id: "/pos/order",
+				pattern: /^\/pos\/order\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 5 },
+				endpoint: null
+			},
+			{
+				id: "/sid/[sid]",
+				pattern: /^\/sid\/([^/]+?)\/?$/,
+				params: [{"name":"sid","optional":false,"rest":false,"chained":false}],
+				page: null,
+				endpoint: __memo(() => import('./entries/endpoints/sid/_sid_/_server.ts.js'))
+			}
+		],
+		matchers: async () => {
+			
+			return {  };
+		},
+		server_assets: {}
+	}
+}
+})();

@@ -1,0 +1,31 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-02 23:49:11.542043",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "benefit"
+ ],
+ "fields": [
+  {
+   "fieldname": "benefit",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Benefit"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-12-02 23:51:09.782457",
+ "modified_by": "Administrator",
+ "module": "Dinks",
+ "name": "Plan Benefits",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

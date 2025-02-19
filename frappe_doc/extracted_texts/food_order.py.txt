@@ -1,0 +1,353 @@
+# Copyright (c) 2024, Jokoor and contributors
+# For license information, please see license.txt
+
+
+from __future__ import unicode_literals
+import frappe
+from frappe.model.document import Document
+from frappe.utils.print_format import print_by_server
+
+
+class FoodOrder(Document):
+    def validate(self):
+        if frappe.db.exists("Module Def", "Jokoor Hotel"):
+            if self.order_type == 'Room Service':
+                room_doc = frappe.get_doc('Rooms', self.room)
+                if room_doc.room_status != 'Checked In' and room_doc.check_in_id == self.check_in_id:
+                    frappe.throw('Room Status is not Checked In')
+        shift = frappe.get_value("POS Shift", {"user": frappe.session.user, "status": "Open"}, "name")
+        pos_profile = frappe.get_value("POS Shift", shift, "pos_profile")
+        self.shift = shift
+        self.pos_profile = pos_profile
+
+    
+
+
+
+    def create_stock_entry(self):
+        for item in self.items:
+            item_doc = frappe.get_doc('Food Item', item.item)
+            if item_doc.raw_materials and item_doc.default_bom:
+                bom = frappe.get_doc('BOM', item_doc.default_bom)
+                stock_entry = frappe.new_doc('Stock Entry')
+                stock_entry.stock_entry_type = 'Material Issue'
+                stock_entry.purpose = 'Material Issue'
+                stock_entry.company = self.company
+                stock_entry.from_warehouse = item_doc.default_warehouse
+                stock_entry.append('items', {
+                    'item_code': item.item,
+                    'qty': item.qty,
+                    'uom': frappe.get_value('Item', item.item, 'stock_uom'),
+                    's_warehouse': item_doc.default_warehouse,
+                    'conversion_factor': 1
+                })
+                stock_entry.insert(ignore_permissions=True)
+                # stock_entry.submit()
+                frappe.db.commit()
+
+    def on_submit(self):
+        
+        
+        if self.is_unavailable:
+            frappe.db.set_value("Food Order", self.name,
+                                "status", "Unavailable")
+            frappe.db.commit()
+            return
+        # check if the room field is available
+        
+        if frappe.db.exists("Module Def", "Jokoor Hotel") and self.order_type == 'Room Service':
+            if self.is_paid == 1:
+                self.status = "Completed"
+                frappe.db.set_value("Food Order", self.name,
+                                    "status", "Completed")
+                frappe.db.commit()
+            else:
+                frappe.db.set_value(
+                    "Food Order", self.name, "status", "Unpaid")
+                frappe.db.commit()
+                guest = frappe.get_doc('Hotel Guests', self.guest_id)
+                guest.food_charges += float(self.total_amount)
+                guest.save()
+                frappe.db.commit()
+
+        elif self.order_type == 'Dine In' or 'Take Away':
+            if self.is_paid == 1:
+                self.status = "Completed"
+                frappe.db.set_value("Food Order", self.name,
+                                    "status", "Completed")
+                frappe.db.commit()
+            else:
+                frappe.db.set_value(
+                    "Food Order", self.name, "status", "Unpaid")
+                frappe.db.commit()
+
+       
+        
+        customer = frappe.get_doc('Customer', self.customer)
+        if customer.is_management:
+            frappe.db.set_value('Food Order', self.name, 'is_management', 1)
+            frappe.db.commit()
+        if self.order_type == 'Room Service':
+            create_invoice(self)
+        elif self.order_type == 'Dine In' and not customer.is_management:
+            create_invoice(self)
+        elif self.order_type == 'Take Away' and not customer.is_management:
+            create_invoice(self)
+            frappe.db.commit()
+        # enque the create kot
+    def after_insert(self):
+        try:
+            create_kot(self.name)  
+        except Exception as e:
+            frappe.log_error(frappe.get_traceback(), "Custom Error Log")        
+
+    def on_cancel(self):
+        self.status = "Cancelled"
+        doc = frappe.get_doc('Food Order', self.name)
+        doc.db_set('status', 'Cancelled')
+
+
+def create_invoice(self):
+    company = frappe.get_doc('Company', self.company)
+    if frappe.db.exists("Module Def", "Jokoor Hotel") and self.order_type == 'Room Service':
+        remarks = ""
+        create_sales_invoice(self, customer=self.customer, company=company,
+                             check_in_id=self.check_in_id, remarks=remarks)
+
+    # elif self.order_type == 'Room':
+    #     remarks = f'POS Room# {self.room}'
+    #     if self.table:
+    #         remarks = f'{remarks} Table# {self.table}'
+
+    #     create_sales_invoice(self, customer = self.customer, company = company, check_in_id=self.check_in_id, remarks= remarks)
+    elif self.order_type == 'Take Away':
+        remarks = 'Take Away '
+        if frappe.db.exists("Module Def", "Jokoor Hotel") and self.room:
+            remarks += f'Room#  {self.room}'
+        # Creating Sales Invoice
+        create_sales_invoice(self, customer=self.customer, company=company)
+
+    elif self.order_type == 'Dine In':
+        remarks = f'Restaurant Table# {self.table}'
+        # Generate invoice
+        create_sales_invoice(self, customer=self.customer, company=company)
+
+    # elif self.order_type == 'Staff':
+    #   remarks = 'Staff Entertainment Department: ' + self.department
+    #   # Generate Invoice
+    #   create_sales_invoice(self, customer='Staff Entertainment', company=company, remarks=remarks)
+
+    # elif self.order_type == 'Complimentary':
+    #   remarks = 'Complimentary'
+    #   # Generate Invoice
+    #   create_sales_invoice(self, customer = self.customer, company = company, remarks= remarks)
+
+
+def set_status(self):
+    pass
+
+
+@frappe.whitelist(allow_guest=True)
+def create_sales_invoice(self, customer, company, check_in_id=None, remarks=None, staff=None, complimentary=None):
+    if customer:
+        customer_doc = frappe.get_doc('Customer', customer)
+
+    sales_invoice_doc = frappe.new_doc('Sales Invoice')
+    sales_invoice_doc.discount_amount = 0
+    sales_invoice_doc.customer = customer
+    sales_invoice_doc.due_date = frappe.utils.data.today()
+    sales_invoice_doc.debit_to = company.default_receivable_account
+    sales_invoice_doc.food_id = self.name
+    if self.update_stock:
+        sales_invoice_doc.update_stock = 1
+        warehouse = self.source_warehouse
+        if not self.source_warehouse:
+            pos_profile = frappe.get_value(
+                "POS Shift", {"user": frappe.session.user, "status": "Open"}, "pos_profile")
+            warehouse = frappe.get_value(
+                "POS Profile", pos_profile, "warehouse")
+        sales_invoice_doc.set_warehouse = warehouse
+
+    if check_in_id:
+        sales_invoice_doc.check_in_id = self.check_in_id
+        sales_invoice_doc.custom_invoice_type = "Food"
+        sales_invoice_doc.check_in_date = frappe.get_value(
+            'Hotel Check In', self.check_in_id, 'check_in')
+        sales_invoice_doc.custom_room = self.room if frappe.db.exists("Module Def", "Jokoor Hotel") and self.room else ""
+
+    if remarks:
+        sales_invoice_doc.remarks = remarks
+    # if customer_doc.custom_is_staff:
+    #     sales_invoice_doc.is_pos = 1
+
+    for item in self.items:
+        item_doc = frappe.get_doc('Item', item.item)
+
+        # Getting Item default Income Account
+        default_income_account = None
+        for item_default in item_doc.item_defaults:
+            if item_default.company == self.company:
+                if item_default.income_account:
+                    default_income_account = item_default.income_account
+                else:
+                    default_income_account = company.default_income_account
+
+        # Adding Items to Sales Invoice
+        sales_invoice_doc.append('items', {
+            'item_code': item_doc.item_code,
+            'item_name': item_doc.item_name,
+            'description': item_doc.description,
+            'qty': item.qty,
+            'uom': item_doc.stock_uom,
+            'rate': item.rate,
+            'amount': item.amount,
+            'income_account': default_income_account
+        })
+
+    if self.discount_amount:
+        sales_invoice_doc.discount_amount += int(self.discount_amount)
+    if self.service_charges and self.order_type == 'Room Service':
+        if not frappe.db.exists('Item', 'ROOM SERVICE CHARGES'):
+            # add the item
+            item_doc = frappe.new_doc('Item')
+            item_doc.item_code = 'ROOM SERVICE CHARGES'
+            item_doc.item_name = 'ROOM SERVICE CHARGES'
+            item_doc.description = 'ROOM SERVICE CHARGES'
+            item_doc.stock_uom = 'Nos'
+            item_doc.item_group = 'Services'
+            item_doc.save(ignore_permissions=True)
+            frappe.db.commit()
+        else:
+            item_doc = frappe.get_doc('Item', 'ROOM SERVICE CHARGES')
+
+        # Getting Item default Income Account
+        default_income_account = None
+        for item_default in item_doc.item_defaults:
+            if item_default.company == self.company:
+                if item_default.income_account:
+                    default_income_account = item_default.income_account
+                else:
+                    default_income_account = company.default_income_account
+
+        sales_invoice_doc.append('items', {
+            'item_code': item_doc.item_code,
+            'item_name': item_doc.item_name,
+            'description': item_doc.description,
+            'qty': 1,
+            'uom': item_doc.stock_uom,
+            'rate': self.service_charges,
+            'amount': self.service_charges,
+            'income_account': default_income_account
+        })
+
+    if frappe.db.exists("Module Def", "Jokoor Hotel") and self.room and self.order_type == 'Room Service':
+        if self.is_paid == 1:
+            sales_invoice_doc.is_pos = 1
+            sales_invoice_doc.pos_profile = self.pos_profile
+            if self.payments:
+                for payment in self.payments:
+                    sales_invoice_doc.append('payments', {
+                        'mode_of_payment': payment.mode_of_payment,
+                        'amount': payment.amount
+                    })
+            else:
+                sales_invoice_doc.append('payments', {
+                    'mode_of_payment': 'Cash',
+                    'amount': self.total_amount
+                })
+    elif self.order_type == 'Dine In' or self.order_type == 'Take Away':
+        if self.is_paid == 1:
+            sales_invoice_doc.is_pos = 1
+            sales_invoice_doc.pos_profile = self.pos_profile
+            if self.payments:
+                for payment in self.payments:
+                    sales_invoice_doc.append('payments', {
+                        'mode_of_payment': payment.mode_of_payment,
+                        'amount': payment.amount
+                    })
+            else:
+                sales_invoice_doc.append('payments', {
+                    'mode_of_payment': 'Cash',
+                    'amount': self.total_amount
+                })
+    sales_invoice_doc.insert(ignore_permissions=True)
+    sales_invoice_doc.submit()
+
+
+@frappe.whitelist(allow_guest=True)
+def create_payment_voucher(invoice, customer, company, remarks):
+    invoice = frappe.get_doc('Sales Invoice', invoice)
+    payment_entry = frappe.new_doc('Payment Entry')
+    payment_entry.payment_type = 'Receive'
+    payment_entry.mode_of_payment = 'Cash'
+    payment_entry.paid_to = company.default_cash_account
+    payment_entry.paid_from = company.default_receivable_account
+    payment_entry.party_type = 'Customer'
+    payment_entry.party = customer
+    payment_entry.received_amount = invoice.grand_total
+    payment_entry.paid_amount = invoice.grand_total
+    payment_entry.remarks = remarks
+    payment_entry.append('references', {
+        'reference_doctype': 'Sales Invoice',
+        'reference_name': invoice.name,
+        'total_amount': invoice.grand_total,
+        'outstanding_amount': invoice.outstanding_amount,
+        'allocated_amount': invoice.grand_total
+    })
+    payment_entry.insert(ignore_permissions=True)
+    payment_entry.submit()
+    frappe.db.commit()
+    return payment_entry.name, invoice.name
+
+@frappe.whitelist(allow_guest=True)
+def get_room_as_customer(room):
+    room_doc = frappe.get_doc('Rooms', room)
+    if room_doc.check_in_id:
+        checkin = frappe.get_doc('Hotel Check In', room_doc.check_in_id)
+        return {
+            "customer": frappe.db.get_value("Customer",{"custom_guest_id": checkin.guest_id}, "name"),
+            "guest_id": checkin.guest_id
+        }
+def create_kot(doc):
+        # Create Kitchen Order Ticket base on item group of each item
+        order = frappe.get_doc('Food Order', doc)
+        data = {}
+        for item in order.items:
+            item_doc = frappe.get_doc('Item', item.item)
+            kitchen = frappe.get_value(
+                'Item Group', item_doc.item_group, 'kitchen')
+            if not kitchen:
+                continue
+            printer = frappe.db.get_value(
+                "Kitchen Printer", kitchen, "printer_name")
+
+            if kitchen:
+                if kitchen not in data:
+                    data[kitchen] = {
+                        'kitchen': kitchen,
+                        'items': []
+                    }
+                    data[kitchen]['items'].append({
+                        'item': item.item,
+                        'qty': item.qty,
+                        'details': item.details
+                    })
+                else:
+                    data[kitchen]['items'].append({
+                        'item': item.item,
+                        'qty': item.qty,
+                        'details': item.details
+                    })
+        for key in data:
+            kot = frappe.new_doc('KOT')
+            kot.order_id = order.name
+            kot.kitchen = data[key]['kitchen']
+            kot.printer = printer
+            for item in data[key]['items']:
+                kot.append('items', {
+                    'item_code': item['item'],
+                    'qty': item['qty'],
+                    'details': item['details']
+                })
+            kot.insert(ignore_permissions=True)
+            frappe.db.commit()

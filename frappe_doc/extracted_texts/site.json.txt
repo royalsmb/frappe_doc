@@ -1,0 +1,162 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2024-07-03 10:00:18.924340",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_information_section",
+  "site_name",
+  "site_url",
+  "column_break_ffra",
+  "creation_date",
+  "status",
+  "subscription_information_section",
+  "plan",
+  "subscription",
+  "offer_trial",
+  "trial_period_start",
+  "trial_period_end",
+  "column_break_zzjk",
+  "customer",
+  "start_date",
+  "end_date",
+  "is_created"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_information_section",
+   "fieldtype": "Section Break",
+   "label": " Basic Information"
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "label": "Site Name",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "site_url",
+   "fieldtype": "Data",
+   "label": "Site Url",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ffra",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "creation_date",
+   "fieldtype": "Date",
+   "label": "Creation Date",
+   "options": "Today"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive\nSuspended\nTrialing",
+   "read_only": 1
+  },
+  {
+   "fieldname": "subscription_information_section",
+   "fieldtype": "Section Break",
+   "label": "Subscription Information"
+  },
+  {
+   "fieldname": "column_break_zzjk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "plan",
+   "fieldtype": "Link",
+   "label": "Plan",
+   "options": "Subscription Plan",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "set_only_once": 1
+  },
+  {
+   "fetch_from": "subscirption.start_date",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Subscription Start Date",
+   "options": "now",
+   "set_only_once": 1
+  },
+  {
+   "fetch_from": "subscirption.trial_period_end",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "Subscription End Date",
+   "set_only_once": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "offer_trial",
+   "fieldtype": "Check",
+   "label": "Offer Trial",
+   "set_only_once": 1
+  },
+  {
+   "depends_on": "eval:doc.offer_trial",
+   "fieldname": "trial_period_start",
+   "fieldtype": "Date",
+   "label": " Trial Period Start Date ",
+   "set_only_once": 1
+  },
+  {
+   "depends_on": "eval:doc.offer_trial",
+   "fieldname": "trial_period_end",
+   "fieldtype": "Date",
+   "label": " Trial Period End Date",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "subscription",
+   "fieldtype": "Link",
+   "label": "Subscription",
+   "options": "Subscription",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_created",
+   "fieldtype": "Check",
+   "label": "Is Created"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-09 23:09:48.056293",
+ "modified_by": "Administrator",
+ "module": "Reformiqo",
+ "name": "Site",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "site_name"
+}

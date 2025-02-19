@@ -1,0 +1,741 @@
+import { w as writable, k as get, r as readable, l as derived } from "./exports.js";
+import { D as DEV } from "./utils.js";
+import "clsx";
+import { r as redirect } from "./index.js";
+import { g as goto } from "./client.js";
+const browser = DEV;
+function createCacheStore(key, value, expirySeconds) {
+  try {
+    const now = Date.now();
+    const expiryTime = now + expirySeconds * 1e3;
+    const cacheItem = {
+      value,
+      expiry: expiryTime
+    };
+    if (browser) ;
+    return true;
+  } catch (error) {
+    console.error("Failed to set item in localStorage:", error);
+    return false;
+  }
+}
+function getCacheStore(key) {
+  return null;
+}
+function isCacheExpired(key) {
+  return true;
+}
+const getNewOrder = () => {
+  return {
+    ref: getHash(),
+    order_type: "dine_in",
+    room: "",
+    customer: "Walkin",
+    table: "",
+    total: 0,
+    items: []
+  };
+};
+const getHash = () => {
+  return Math.floor(2147483648 * Math.random()).toString(36);
+};
+function randomString(length) {
+  let result = "";
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+const Months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "Septemper",
+  "October",
+  "November",
+  "December"
+];
+function formatDate(date, format) {
+  if (!date) return "";
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+  const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const weekday = weekdays[date.getDay()];
+  const shortMonth = Months[month - 1];
+  return format.replace(/w/g, weekday).replace(/yyyy/g, year.toString()).replace(/yy/g, year.toString().slice(2)).replace(/MM/g, month.toString().padStart(2, "0")).replace(/WM/g, shortMonth).replace(/dd/g, day.toString().padStart(2, "0")).replace(/HH/g, hours.toString().padStart(2, "0")).replace(/mm/g, minutes.toString().padStart(2, "0")).replace(/ss/g, seconds.toString().padStart(2, "0"));
+}
+const generateLabelFromKey = (key) => {
+  return key.split("_").map((word) => (word[0]?.toUpperCase() || "") + word.slice(1)).join(" ");
+};
+const getRandomLightColor = () => {
+  const r = Math.floor(200 + Math.random() * 55).toString(16).padStart(2, "0");
+  const g = Math.floor(200 + Math.random() * 55).toString(16).padStart(2, "0");
+  const b = Math.floor(200 + Math.random() * 55).toString(16).padStart(2, "0");
+  return `#${r}${g}${b}`;
+};
+function getCookieBrowser(name) {
+  return;
+}
+function createLocalStorageStore(key, initialValue) {
+  const initial = initialValue;
+  const store = writable(initial);
+  store.subscribe((value) => {
+  });
+  return store;
+}
+const selectedWarehouse = createLocalStorageStore(
+  "warehouse",
+  getCookieBrowser() || ""
+);
+selectedWarehouse.subscribe((value) => {
+});
+const sessionToken = writable("");
+const csrfToken = writable("");
+function getSignal() {
+  let controller;
+  if (globalThis.AbortController) {
+    controller = new globalThis.AbortController();
+  }
+  return controller;
+}
+function generateCancelableFetch(_fetch, controller) {
+  return (input, init) => {
+    return _fetch(input, { signal: controller?.signal, ...init || {} });
+  };
+}
+const responseStore = (action, startValue, _cacheKey = "", cacheTimeout = 1e3 * 60 * 60 * 24, useWarehouse = false) => {
+  const store = writable({
+    loading: false,
+    error: null,
+    data: startValue
+  });
+  const { subscribe } = store;
+  const get$1 = () => {
+    return get(store);
+  };
+  let controller;
+  const smartLoad = async (arg, noCache = false, warehouse = "") => {
+    const state = get$1();
+    const cacheKey = `cache-${warehouse}-${_cacheKey}`;
+    const cacheExists = cacheKey ? getCacheStore() : void 0;
+    const cacheExpired = cacheKey ? isCacheExpired() : true;
+    if (!noCache && cacheExists && !cacheExpired) {
+      const value2 = { data: cacheExists[0], error: cacheExists[1], loading: false };
+      store.update(() => value2);
+      return value2;
+    }
+    if (state.loading) {
+      return await new Promise((r) => {
+        const unsubscribe = subscribe((s) => {
+          if (!s.loading) {
+            setTimeout(() => {
+              try {
+                unsubscribe();
+              } catch (_error) {
+                console.log(_error);
+              }
+            }, 3e3);
+            r(s);
+          }
+        });
+      });
+    }
+    if (controller) {
+      controller.abort();
+    }
+    controller = getSignal();
+    const cancelableFetch = generateCancelableFetch(fetch, controller);
+    store.update((s) => ({ ...s, loading: true }));
+    const [data, error] = await action(arg, cancelableFetch);
+    if (error && cacheExists && !cacheExists[1]) {
+      const value2 = { data: cacheExists[0], error: cacheExists[1], loading: false };
+      store.update(() => value2);
+      return value2;
+    }
+    if (cacheTimeout && cacheKey) createCacheStore(cacheKey, [data, error], cacheTimeout);
+    const value = { data, error, loading: false };
+    store.update(() => value);
+    return value;
+  };
+  const asyncGet = () => {
+    return new Promise((r) => {
+      const value = get$1();
+      if (!value.loading) return r(value);
+      const unsub = store.subscribe((v) => {
+        if (!v.loading) {
+          r(v);
+          try {
+            setTimeout(unsub, 1e3);
+          } catch (_error) {
+            console.log(_error);
+          }
+        }
+      });
+    });
+  };
+  const startFakeLoading = () => {
+    store.update((s) => ({ ...s, loading: true }));
+  };
+  return {
+    subscribe,
+    load: smartLoad,
+    get: get$1,
+    asyncGet,
+    startFakeLoading
+  };
+};
+const mediaQuery = globalThis?.matchMedia?.("(prefers-reduced-motion: reduce)");
+readable(mediaQuery?.matches, (set) => {
+  mediaQuery?.addEventListener("change", (event) => {
+    set(event.matches);
+  });
+});
+function timeoutStore(defaultValue) {
+  const { subscribe, update, set } = writable(defaultValue);
+  let timeoutId;
+  const close = () => {
+    clearTimeout(timeoutId);
+    set(defaultValue);
+  };
+  return {
+    subscribe,
+    set: (value, timeout = 3e3) => update(() => {
+      close();
+      timeoutId = setTimeout(close, timeout);
+      return value;
+    }),
+    close
+  };
+}
+const getCsrfToken = () => {
+  return responseStore(
+    async (params) => {
+      const myURL = new URL(getApiUrl() + "/api/method/jokoor_hotel.get_csrf_token");
+      const { data, status, error } = await fetcher(myURL, params);
+      if (error || status !== 200) {
+        {
+          goto();
+        }
+        return ["", error || "An error occurred"];
+      }
+      return [data || "", null];
+    },
+    "",
+    "get_csrf_token",
+    0,
+    false
+  );
+};
+const getUserSession = () => {
+  return responseStore(
+    async (params) => {
+      const myURL = new URL(
+        getApiUrl() + "/api/method/jokoor_pos.resource.api.v1.get_user_session"
+      );
+      const { data, status, error } = await fetcher(myURL, params);
+      if (error || status !== 200) {
+        return [{}, error || "An error occurred"];
+      }
+      return [data, ""];
+    },
+    {},
+    "getUserSession",
+    0,
+    false
+  );
+};
+const getShiftSales = () => {
+  return responseStore(
+    async () => {
+      const myURL = new URL(getApiUrl() + "/api/method/jokoor_pos.resource.api.v1.get_shift_sales");
+      const { data, status, error } = await fetcher(myURL);
+      if (error || status !== 200) {
+        return [{}, error || "An error occurred"];
+      }
+      return [data || "", null];
+    },
+    {},
+    "getShiftSales",
+    0
+  );
+};
+const getProducts = () => {
+  return responseStore(
+    async (params) => {
+      const myURL = new URL(getApiUrl() + "/api/method/jokoor_pos.resource.api.v1.get_all_items");
+      const { data, status, error } = await fetcher(myURL, params);
+      if (error || status !== 200) {
+        return [[], error || "An error occurred"];
+      }
+      const products2 = data?.map((p) => {
+        p.ref = p.order_id;
+        return p;
+      });
+      return [products2 || [], null];
+    },
+    [],
+    "getProducts",
+    3600,
+    true
+  );
+};
+const getRestaurantTables = () => {
+  return responseStore(
+    async () => {
+      const myURL = new URL(
+        getApiUrl() + "/api/method/jokoor_restaurant.api.get_restaurant_tables"
+      );
+      const { data, status, error } = await fetcher(myURL);
+      if (error || status !== 200) {
+        return [[], error || "An error occurred"];
+      }
+      return [data || [], null];
+    },
+    [],
+    "getRestaurantTables",
+    3600,
+    true
+  );
+};
+const getCustomers = () => {
+  return responseStore(
+    async () => {
+      const myURL = new URL(getApiUrl() + "/api/method/jokoor_restaurant.api.get_customers");
+      const { data, status, error } = await fetcher(myURL);
+      if (error || status !== 200) {
+        return [[], error || "An error occurred"];
+      }
+      return [data || [], null];
+    },
+    [],
+    "getCustomers",
+    3600,
+    true
+  );
+};
+const getRooms = () => {
+  return responseStore(
+    async () => {
+      const myURL = new URL(getApiUrl() + "/api/method/jokoor_restaurant.api.get_rooms");
+      const { data, status, error } = await fetcher(myURL);
+      if (error || status !== 200) {
+        return [[], error || "An error occurred"];
+      }
+      return [data || [], null];
+    },
+    [],
+    "getRooms",
+    3600,
+    true
+  );
+};
+const getOngoingOrders = () => {
+  return responseStore(
+    async () => {
+      const myURL = new URL(
+        getApiUrl() + "/api/method/jokoor_pos.resource.api.v1.get_draft_orders"
+      );
+      const { data, status, error } = await fetcher(myURL);
+      if (error || status !== 200) {
+        return [[], error || "An error occurred"];
+      }
+      const orders = (data || []).map((order) => ({ ...order, ref: order.order_id || "" }));
+      return [orders, null];
+    },
+    [],
+    "getOngoingOrders",
+    0,
+    true
+  );
+};
+const getPaymentMethods = () => {
+  return responseStore(
+    async () => {
+      const myURL = new URL(getApiUrl() + "/api/method/jokoor_restaurant.api.get_payment_methods");
+      const { data, status, error } = await fetcher(myURL);
+      if (error || status !== 200) {
+        return [[], error || "An error occurred"];
+      }
+      return [data, null];
+    },
+    [],
+    "getPaymentMethods",
+    0,
+    true
+  );
+};
+const getPosSettings = () => {
+  return responseStore(
+    async () => {
+      const myURL = new URL(
+        getApiUrl() + "/api/method/jokoor_restaurant.config.config.restaurant_settings"
+      );
+      const { data, status, error } = await fetcher(myURL);
+      if (error || status !== 200) {
+        return [{}, error || "An error occurred"];
+      }
+      return [data, null];
+    },
+    {},
+    "getPosSettings",
+    0,
+    true
+  );
+};
+const createCustomer = (customerData) => {
+  return responseStore(
+    async () => {
+      const myURL = new URL(getApiUrl() + "/api/method/jokoor_restaurant.api.create_customer");
+      const { data, status, error } = await fetcher(myURL, {
+        method: "POST",
+        body: customerData
+      });
+      if (error || status !== 200) {
+        return [{}, error || "Failed to create customer"];
+      }
+      return [data, null];
+    },
+    {},
+    "create_customer",
+    0,
+    false
+  );
+};
+const getProductByBarcode = (barcode, items) => {
+  return items.find((item) => item.barcodes?.includes(barcode)) || null;
+};
+const playSound = async (sound = "beep") => {
+  return;
+};
+const refreshing = writable(false);
+const confirmDeleteStore = writable();
+const currentUserSession = writable();
+const warehouseOptions = writable([]);
+const showCloseShiftReport = writable();
+const csrfTokenApiStore = getCsrfToken();
+const currentUserSessionApiStore = getUserSession();
+const shiftSalesApiStore = getShiftSales();
+const posSettingsApiStore = getPosSettings();
+csrfTokenApiStore.subscribe((value) => {
+  if (value.data) {
+    csrfToken.set(value.data);
+  }
+});
+currentUserSessionApiStore.subscribe((value) => {
+  if (value.data) {
+    currentUserSession.set(value.data);
+  }
+});
+posSettingsApiStore.subscribe((value) => {
+  if (value.data) {
+    const warehouses = value.data.warehouses || [];
+    if (warehouses.length === 0) {
+      warehouses.push(value.data.default_warehouse || "");
+    }
+    const warehouse = get(selectedWarehouse);
+    if (!warehouse || !warehouses.includes(warehouse)) {
+      selectedWarehouse.set(warehouses[0]);
+    }
+    warehouseOptions.set(warehouses.map((wh) => ({ name: wh, value: wh })));
+  }
+});
+const toasts = writable([]);
+const AllCategories = "All Items";
+const productsApiStore = getProducts();
+const shiftSales = readable({}, (set) => {
+  shiftSalesApiStore.subscribe((value) => {
+    console.log(value);
+    set(value.data);
+  });
+});
+const restuarantTablesApiStore = getRestaurantTables();
+const roomApiStore = getRooms();
+const customersApiStore = getCustomers();
+const paymentMethodsApiStore = getPaymentMethods();
+const onGoingOrdersApiStore = getOngoingOrders();
+const recentlyUpdated = timeoutStore();
+const warehouseCurrentOrders = createLocalStorageStore(
+  "warehouseCurrentOrders",
+  {}
+);
+const currentOrder = derived(
+  [warehouseCurrentOrders, selectedWarehouse],
+  ([orders, warehouse], set) => {
+    if (!warehouse) {
+      set(getNewOrder());
+      return;
+    }
+    const order = orders[warehouse];
+    set(order || getNewOrder());
+  }
+);
+const updateCurrentOrder = (order) => {
+  const warehouse = get(selectedWarehouse);
+  if (!warehouse) return;
+  warehouseCurrentOrders.update((orders) => ({
+    ...orders,
+    [warehouse]: order
+  }));
+};
+selectedWarehouse.subscribe((warehouse) => {
+  if (!warehouse) return;
+  warehouseCurrentOrders.update((orders) => {
+    if (!orders[warehouse]) {
+      return {
+        ...orders,
+        [warehouse]: getNewOrder()
+      };
+    }
+    return orders;
+  });
+});
+const activeOngoingOrder = writable();
+const mergingOngoingOrders = writable();
+const isModalOpen = writable(false);
+const activeCategory = createLocalStorageStore("activeCategory", AllCategories);
+const showLoadingSpinner = writable(false);
+const products = readable([], (set) => {
+  productsApiStore.subscribe((value) => {
+    set(value.data);
+  });
+});
+const customersOptions = readable([], (set) => {
+  customersApiStore.subscribe((value) => {
+    set(value.data.map((c) => ({ value: c.name, ...c })));
+  });
+});
+const restuarantTables = readable([], (set) => {
+  restuarantTablesApiStore.subscribe((value) => {
+    set(value.data);
+  });
+});
+readable([], (set) => {
+  roomApiStore.subscribe((value) => {
+    console.log("roomOptions", value);
+    set(value.data.map((r) => ({ value: r.name, name: r.room_name })));
+  });
+});
+const ongoingWarehouseOrders = createLocalStorageStore(
+  "ongoingWarehouseOrders",
+  {}
+);
+const ongoingOrders = derived([ongoingWarehouseOrders, selectedWarehouse], ([warehouseOrders, warehouse], set) => {
+  if (!warehouse) {
+    set([]);
+    return;
+  }
+  const orders = warehouseOrders[warehouse] || [];
+  set(orders);
+});
+setInterval(async () => {
+  const orders = onGoingOrdersApiStore.get().data || [];
+  const ordersNew = (await onGoingOrdersApiStore.load(void 0, true)).data || [];
+  if (orders.length !== ordersNew.length) {
+    playSound("alert");
+  }
+}, 8e3);
+onGoingOrdersApiStore.subscribe((response) => {
+  const warehouse = get(selectedWarehouse);
+  if (!warehouse || !response.data) return;
+  ongoingWarehouseOrders.update((warehouseOrders) => ({
+    ...warehouseOrders,
+    [warehouse]: response.data
+  }));
+});
+selectedWarehouse.subscribe((warehouse) => {
+  if (!warehouse) return;
+  ongoingWarehouseOrders.update((warehouseOrders) => {
+    if (!warehouseOrders[warehouse]) {
+      return {
+        ...warehouseOrders,
+        [warehouse]: []
+      };
+    }
+    return warehouseOrders;
+  });
+});
+const categories = readable([], (set) => {
+  products.subscribe((items) => {
+    set([
+      AllCategories,
+      ...Array.from(new Set((items || []).map((i) => String(i.category).trim()).filter(Boolean)))
+    ]);
+  });
+});
+const search = createLocalStorageStore("search", "");
+const filterProducts = (products2, { search: search2 = "", activeCategory: activeCategory2 = AllCategories } = {}) => {
+  if (!activeCategory2) activeCategory2 = AllCategories;
+  return products2.filter((product) => {
+    const productTitle = product.product_name.toLowerCase();
+    const searchValue = search2.toLowerCase();
+    const searchMatch = productTitle.includes(searchValue) || product.category.includes(searchValue) || searchValue.includes(product.category) || searchValue.includes(productTitle);
+    const categoryMatch = activeCategory2 == AllCategories || product.category == activeCategory2;
+    return searchMatch && categoryMatch;
+  });
+};
+const displayProducts = readable([], function start(set) {
+  const unsub1 = products.subscribe((_products) => {
+    const activeCategoryValue = get(activeCategory);
+    const searchValue = get(search);
+    set(filterProducts(_products, { search: searchValue, activeCategory: activeCategoryValue }));
+  });
+  const unsub2 = activeCategory.subscribe((activeCategory2) => {
+    const searchValue = get(search);
+    const _products = get(products);
+    set(filterProducts(_products, { search: searchValue, activeCategory: activeCategory2 }));
+  });
+  const unsub3 = search.subscribe((search2) => {
+    const activeCategoryValue = get(activeCategory);
+    const _products = get(products);
+    set(filterProducts(_products, { search: search2, activeCategory: activeCategoryValue }));
+  });
+  return function stop() {
+    unsub1();
+    unsub2();
+    unsub3();
+  };
+});
+const isGridView = createLocalStorageStore("isGridView", true);
+function addToast(type, message, timeout = 5e3, sound) {
+  toasts.update((currentToasts) => {
+    return [...currentToasts, { id: Math.random().toString(), type, message, timeout }];
+  });
+  {
+    switch (type) {
+      case "success":
+        playSound("submit");
+        break;
+      case "warning":
+        playSound("alert");
+        break;
+      case "danger":
+        playSound("error");
+    }
+  }
+}
+function removeToast(id) {
+  toasts.update((currentToasts) => currentToasts.filter((toast) => toast.id !== id));
+}
+const defaultApiUrl = "https://to-be-removed.com";
+const getApiUrl = () => {
+  {
+    return defaultApiUrl;
+  }
+};
+async function fetcher(url, _options = {}, customfetch = fetch) {
+  if (typeof url === "string") {
+    url = new URL(url, getApiUrl());
+  }
+  const { authToken = get(sessionToken), body, formBody, ...requestOptions } = _options;
+  const headers = new Headers(requestOptions.headers);
+  if (!headers.has("Content-Type")) {
+    if (formBody && typeof formBody === "string") {
+      headers.set("Content-Type", "application/x-www-form-urlencoded");
+    } else if (body) {
+      headers.set("Content-Type", "application/json");
+    }
+  }
+  if (authToken) {
+    headers.set("Authorization", authToken);
+  }
+  headers.set("Accept", "application/json");
+  const xFrappeCSRFToken = get(csrfToken);
+  if (xFrappeCSRFToken) {
+    headers.set("x-frappe-csrf-token", xFrappeCSRFToken);
+  }
+  headers.set("x-warehouse", get(selectedWarehouse) || getCookieBrowser() || "");
+  const options = {
+    method: "GET",
+    headers,
+    credentials: "include",
+    ...requestOptions
+  };
+  if (body || formBody) {
+    options.body = formBody || JSON.stringify(body);
+    console.log("options.body", { body, formBody });
+  }
+  let res;
+  try {
+    res = await customfetch(url, options);
+  } catch (e) {
+    console.error("Fetch Error", url, e);
+    addToast("success", "Failed connecting");
+    return {
+      data: null,
+      error: "Failed connecting",
+      status: 0
+    };
+  }
+  let error = "";
+  let jsonResponse;
+  try {
+    jsonResponse = await res.json();
+  } catch (error2) {
+    console.error(error2, url, res.status);
+  }
+  if (!res.ok) {
+    const errorType = jsonResponse?.exception?.split?.(":")?.[0]?.split?.(".")?.reverse?.()?.[0] || jsonResponse?.exc_type || "Fetch Error";
+    console.error(errorType, url, res.status, jsonResponse);
+    error = jsonResponse?.error || jsonResponse || "";
+    if ((res.status === 403 || res.status === 401) && ["PermissionError", "AuthenticationError"].includes(errorType)) {
+      console.error("******Redirecting to sign-out");
+      throw redirect(303, "/login");
+    }
+  }
+  if (typeof error === "string" && error) {
+    addToast("danger", error);
+  }
+  return {
+    data: res.ok ? jsonResponse?.data || jsonResponse?.message || jsonResponse : null,
+    error,
+    status: res.status
+  };
+}
+export {
+  currentOrder as A,
+  updateCurrentOrder as B,
+  recentlyUpdated as C,
+  restuarantTables as D,
+  createCustomer as E,
+  playSound as F,
+  getProductByBarcode as G,
+  displayProducts as H,
+  search as I,
+  isGridView as J,
+  activeOngoingOrder as a,
+  currentUserSession as b,
+  customersApiStore as c,
+  getHash as d,
+  randomString as e,
+  posSettingsApiStore as f,
+  getApiUrl as g,
+  shiftSales as h,
+  generateLabelFromKey as i,
+  isModalOpen as j,
+  showLoadingSpinner as k,
+  confirmDeleteStore as l,
+  mergingOngoingOrders as m,
+  showCloseShiftReport as n,
+  removeToast as o,
+  paymentMethodsApiStore as p,
+  ongoingOrders as q,
+  refreshing as r,
+  selectedWarehouse as s,
+  toasts as t,
+  formatDate as u,
+  categories as v,
+  warehouseOptions as w,
+  activeCategory as x,
+  getRandomLightColor as y,
+  customersOptions as z
+};

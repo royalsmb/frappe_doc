@@ -1,0 +1,343 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:email",
+ "creation": "2023-10-28 23:50:12.727051",
+ "default_view": "List",
+ "description": "Represents a User in the system.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "section_break_3",
+  "email",
+  "first_name",
+  "bureau",
+  "column_break0",
+  "full_name",
+  "username",
+  "middle_name",
+  "column_break_11",
+  "last_name",
+  "language",
+  "time_zone",
+  "user_image",
+  "short_bio",
+  "gender",
+  "birth_date",
+  "column_break_26",
+  "phone",
+  "location",
+  "bio",
+  "column_break_22",
+  "mobile_no",
+  "change_password",
+  "new_password",
+  "reset_password_key",
+  "last_reset_password_key_generated_on",
+  "last_password_reset_date"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled",
+   "oldfieldname": "enabled",
+   "oldfieldtype": "Check",
+   "read_only": 1
+  },
+  {
+   "depends_on": "enabled",
+   "fieldname": "section_break_3",
+   "fieldtype": "Section Break",
+   "label": "Basic Info"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "no_copy": 1,
+   "oldfieldname": "email",
+   "oldfieldtype": "Data",
+   "options": "Email",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "First Name",
+   "oldfieldname": "first_name",
+   "oldfieldtype": "Data",
+   "reqd": 1
+  },
+  {
+   "fieldname": "middle_name",
+   "fieldtype": "Data",
+   "label": "Middle Name",
+   "oldfieldname": "middle_name",
+   "oldfieldtype": "Data"
+  },
+  {
+   "bold": 1,
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name",
+   "oldfieldname": "last_name",
+   "oldfieldtype": "Data"
+  },
+  {
+   "fieldname": "column_break0",
+   "fieldtype": "Column Break",
+   "oldfieldtype": "Column Break",
+   "print_width": "50%",
+   "width": "50%"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_standard_filter": 1,
+   "label": "Full Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "username",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_standard_filter": 1,
+   "label": "Username",
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "language",
+   "fieldtype": "Link",
+   "label": "Language",
+   "options": "Language"
+  },
+  {
+   "fieldname": "time_zone",
+   "fieldtype": "Select",
+   "label": "Time Zone"
+  },
+  {
+   "description": "Get your globally recognized avatar from Gravatar.com",
+   "fieldname": "user_image",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "User Image",
+   "no_copy": 1,
+   "print_hide": 1
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "enabled",
+   "fieldname": "short_bio",
+   "fieldtype": "Section Break",
+   "label": "More Information"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Link",
+   "label": "Gender",
+   "oldfieldname": "gender",
+   "oldfieldtype": "Select",
+   "options": "Gender"
+  },
+  {
+   "fieldname": "birth_date",
+   "fieldtype": "Date",
+   "label": "Birth Date",
+   "no_copy": 1,
+   "oldfieldname": "birth_date",
+   "oldfieldtype": "Date"
+  },
+  {
+   "fieldname": "column_break_26",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "bio",
+   "fieldtype": "Small Text",
+   "label": "Bio",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No",
+   "options": "Phone",
+   "unique": 1
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "eval:doc.enabled && (!doc.__islocal || !cint(doc.send_welcome_email))",
+   "fieldname": "change_password",
+   "fieldtype": "Section Break",
+   "label": "Change Password"
+  },
+  {
+   "fieldname": "new_password",
+   "fieldtype": "Password",
+   "label": "Set New Password",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "reset_password_key",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Reset Password Key",
+   "no_copy": 1,
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "description": "Stores the datetime when the last reset password key was generated.",
+   "fieldname": "last_reset_password_key_generated_on",
+   "fieldtype": "Datetime",
+   "hidden": 1,
+   "label": "Last Reset Password Key Generated On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_password_reset_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "Last Password Reset Date",
+   "no_copy": 1,
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "bureau",
+   "fieldtype": "Link",
+   "label": "Bureau",
+   "options": "Bureau",
+   "reqd": 1
+  }
+ ],
+ "icon": "fa fa-user",
+ "image_field": "user_image",
+ "links": [
+  {
+   "group": "Profile",
+   "link_doctype": "Contact",
+   "link_fieldname": "user"
+  },
+  {
+   "group": "Profile",
+   "link_doctype": "Blogger",
+   "link_fieldname": "user"
+  },
+  {
+   "group": "Logs",
+   "link_doctype": "Access Log",
+   "link_fieldname": "user"
+  },
+  {
+   "group": "Logs",
+   "link_doctype": "Activity Log",
+   "link_fieldname": "user"
+  },
+  {
+   "group": "Logs",
+   "link_doctype": "Energy Point Log",
+   "link_fieldname": "user"
+  },
+  {
+   "group": "Logs",
+   "link_doctype": "Route History",
+   "link_fieldname": "user"
+  },
+  {
+   "group": "Settings",
+   "link_doctype": "User Permission",
+   "link_fieldname": "user"
+  },
+  {
+   "group": "Settings",
+   "link_doctype": "Document Follow",
+   "link_fieldname": "user"
+  },
+  {
+   "group": "Activity",
+   "link_doctype": "Communication",
+   "link_fieldname": "user"
+  },
+  {
+   "group": "Activity",
+   "link_doctype": "ToDo",
+   "link_fieldname": "allocated_to"
+  },
+  {
+   "group": "Integrations",
+   "link_doctype": "Token Cache",
+   "link_fieldname": "user"
+  }
+ ],
+ "modified": "2023-10-29 02:27:28.386908",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Bureau Admin",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "set_user_permissions": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Bureau Admin",
+   "select": 1,
+   "share": 1
+  }
+ ],
+ "quick_entry": 1,
+ "route": "user",
+ "search_fields": "full_name",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "full_name",
+ "track_changes": 1
+}

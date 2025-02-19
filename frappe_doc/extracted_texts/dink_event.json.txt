@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "autoname": "format:{###}",
+ "creation": "2024-11-20 00:13:24.763928",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "event_name",
+  "location",
+  "price",
+  "spots_available",
+  "image",
+  "column_break_ifdg",
+  "date",
+  "from_time",
+  "to_time",
+  "section_break_rchn",
+  "event_info",
+  "event_facilities",
+  "location_facilities",
+  "things_to_keep_in_mind"
+ ],
+ "fields": [
+  {
+   "fieldname": "event_name",
+   "fieldtype": "Data",
+   "label": "Event Name"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "label": "Price"
+  },
+  {
+   "fieldname": "spots_available",
+   "fieldtype": "Data",
+   "label": "Spots Available"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "Image"
+  },
+  {
+   "fieldname": "column_break_ifdg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "from_time",
+   "fieldtype": "Time",
+   "label": "From Time"
+  },
+  {
+   "fieldname": "to_time",
+   "fieldtype": "Time",
+   "label": "To time"
+  },
+  {
+   "fieldname": "section_break_rchn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "event_info",
+   "fieldtype": "Small Text",
+   "label": "Event Info"
+  },
+  {
+   "fieldname": "location_facilities",
+   "fieldtype": "Table",
+   "label": "Location Facilities",
+   "options": "Location Facilities"
+  },
+  {
+   "fieldname": "things_to_keep_in_mind",
+   "fieldtype": "Table",
+   "label": "Things to keep in mind",
+   "options": "Table"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "event_facilities",
+   "fieldtype": "Table",
+   "label": "Event Facilities",
+   "options": "Table"
+  }
+ ],
+ "image_field": "image",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-20 00:53:39.212466",
+ "modified_by": "Administrator",
+ "module": "Dinks",
+ "name": "Dink Event",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

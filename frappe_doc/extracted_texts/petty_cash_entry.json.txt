@@ -1,0 +1,165 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:PC-{####}",
+ "creation": "2024-10-27 01:51:46.760798",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_raka",
+  "date",
+  "amount",
+  "shift",
+  "column_break_yoxn",
+  "type",
+  "bank",
+  "expense_type",
+  "income_type",
+  "amended_from",
+  "column_break_tfgg",
+  "remark"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_raka",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date",
+   "options": "today",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Amount",
+   "options": "Company:company:default_currency",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.type==\"Expense\"",
+   "fieldname": "expense_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Expense Type",
+   "mandatory_depends_on": "eval:doc.type==\"Expense\"",
+   "options": "\nTransport Fare\nCredit\nHospital Bill\nFuel\nSalary Advance\nOther"
+  },
+  {
+   "fieldname": "column_break_yoxn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Petty Cash Entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "shift",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Shift"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Small Text",
+   "label": "Remark"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type",
+   "options": "Expense\nIncome\nBank Deposit",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.type==\"Income\"",
+   "fieldname": "income_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Income Type",
+   "mandatory_depends_on": "eval:doc.type==\"Income\"",
+   "options": "\nRoom Payment\nMain Bar Sales\nPaid Credit Bills\nMorning Pool Bar Sales\nNight Sales\nOther"
+  },
+  {
+   "fieldname": "column_break_tfgg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.type==\"Bank Deposit\"",
+   "fieldname": "bank",
+   "fieldtype": "Select",
+   "label": "Bank",
+   "mandatory_depends_on": "eval:doc.type==\"Bank Deposit\"",
+   "options": "Zenith Bank"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-11-18 22:25:46.232107",
+ "modified_by": "Administrator",
+ "module": "Jokoor Hotel",
+ "name": "Petty Cash Entry",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Hotel Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

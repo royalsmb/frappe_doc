@@ -1,0 +1,920 @@
+import { g as getContext, e as stringify, f as bind_props, i as store_get, j as copy_payload, k as assign_payload, u as unsubscribe_stores, c as pop, p as push, l as ensure_array_like, m as store_set, d as slot, n as store_mutate } from "../../../chunks/index2.js";
+import "../../../chunks/client.js";
+import { w as warehouseOptions, s as selectedWarehouse, r as refreshing, p as paymentMethodsApiStore, c as customersApiStore, a as activeOngoingOrder, b as currentUserSession, m as mergingOngoingOrders, d as getHash, e as randomString, f as posSettingsApiStore, h as shiftSales, i as generateLabelFromKey, j as isModalOpen, t as toasts, k as showLoadingSpinner, l as confirmDeleteStore, n as showCloseShiftReport, o as removeToast } from "../../../chunks/fetcher.js";
+import { a as assets, b as base } from "../../../chunks/paths.js";
+import { C as Container, L as Label } from "../../../chunks/Label.js";
+import { N as fallback } from "../../../chunks/utils.js";
+import { a as attr, c as clsx } from "../../../chunks/attributes.js";
+import "../../../chunks/index.js";
+import { S as Select, o as onCancelDelete, a as onConfirmDelete } from "../../../chunks/Select.js";
+import { e as escape_html } from "../../../chunks/escaping.js";
+import "clsx";
+import { R as Receipt, C as CheckboxInput, X as X_close } from "../../../chunks/CheckboxInput.js";
+import { w as writable } from "../../../chunks/exports.js";
+const getStores = () => {
+  const stores$1 = getContext("__svelte__");
+  return {
+    /** @type {typeof page} */
+    page: {
+      subscribe: stores$1.page.subscribe
+    },
+    /** @type {typeof navigating} */
+    navigating: {
+      subscribe: stores$1.navigating.subscribe
+    },
+    /** @type {typeof updated} */
+    updated: stores$1.updated
+  };
+};
+const page = {
+  subscribe(fn) {
+    const store = getStores().page;
+    return store.subscribe(fn);
+  }
+};
+function Refresh($$payload, $$props) {
+  let klass = fallback($$props["class"], "");
+  $$payload.out += `<svg aria-hidden="true"${attr("class", `h-6 w-6 text-inherit ${stringify(klass)}`)} fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>`;
+  bind_props($$props, { class: klass });
+}
+function Nav($$payload, $$props) {
+  push();
+  var $$store_subs;
+  let activeUrl;
+  let showShiftSalesCloseBtn = fallback($$props["showShiftSalesCloseBtn"], false);
+  const items = [
+    { label: "New Order", href: base + "/pos/order" },
+    {
+      label: "Open Orders",
+      href: base + "/pos/open-orders"
+    }
+  ];
+  activeUrl = store_get($$store_subs ??= {}, "$page", page).url.pathname;
+  let $$settled = true;
+  let $$inner_payload;
+  function $$render_inner($$payload2) {
+    Container($$payload2, {
+      class: "flex justify-between py-2",
+      children: ($$payload3) => {
+        const each_array = ensure_array_like(items);
+        $$payload3.out += `<div class="flex gap-5"><a class="heading flex items-center justify-center text-accent"${attr("href", "/app")}><img alt="royalsmb" class="h-7 object-contain"${attr("src", assets + "/logo.png")}></a> <!--[-->`;
+        for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+          let { label, href } = each_array[$$index];
+          const active = href === activeUrl;
+          $$payload3.out += `<a${attr("href", href)}${attr("class", `item-bg flex flex-col items-center justify-center gap-1 rounded-lg p-2 text-2xl ${stringify([active ? "active" : ""].filter(Boolean).join(" "))}`)}>${escape_html(label)}</a>`;
+        }
+        $$payload3.out += `<!--]--></div> <div class="flex gap-4">`;
+        Select($$payload3, {
+          containerClass: store_get($$store_subs ??= {}, "$warehouseOptions", warehouseOptions).length <= 1 ? "hidden" : "",
+          height: 54,
+          options: store_get($$store_subs ??= {}, "$warehouseOptions", warehouseOptions),
+          get value() {
+            return store_get($$store_subs ??= {}, "$selectedWarehouse", selectedWarehouse);
+          },
+          set value($$value) {
+            store_set(selectedWarehouse, $$value);
+            $$settled = false;
+          }
+        });
+        $$payload3.out += `<!----> <button${attr("disabled", store_get($$store_subs ??= {}, "$refreshing", refreshing), true)} class="button-text flex items-center gap-2 rounded border border-accent p-3 text-accent ring-accent hover:ring-2 svelte-848u57">`;
+        Refresh($$payload3, {
+          class: store_get($$store_subs ??= {}, "$refreshing", refreshing) ? "animate-spin" : ""
+        });
+        $$payload3.out += `<!----> Refresh</button> <button${attr("disabled", store_get($$store_subs ??= {}, "$refreshing", refreshing), true)} class="button-text flex items-center gap-2 rounded border border-secondary p-3 text-secondary ring-secondary hover:ring-2 svelte-848u57">Shift Sales</button> <button${attr("disabled", store_get($$store_subs ??= {}, "$refreshing", refreshing), true)} class="button-text flex items-center gap-2 rounded border border-attention p-3 text-attention ring-attention hover:ring-2 svelte-848u57">Close Shift</button></div>`;
+      },
+      $$slots: { default: true }
+    });
+  }
+  do {
+    $$settled = true;
+    $$inner_payload = copy_payload($$payload);
+    $$render_inner($$inner_payload);
+  } while (!$$settled);
+  assign_payload($$payload, $$inner_payload);
+  if ($$store_subs) unsubscribe_stores($$store_subs);
+  bind_props($$props, { showShiftSalesCloseBtn });
+  pop();
+}
+function Modal($$payload, $$props) {
+  let klass = fallback($$props["class"], "");
+  let isOpen = fallback($$props["isOpen"], false);
+  if (isOpen) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<div class="fixed left-0 top-0 z-[99999] h-full w-full overflow-hidden bg-secondary/40"></div> <section class="fixed left-0 top-0 z-[99999] h-full w-full overflow-hidden bg-light/20 shadow-2xl md:bg-transparent"><div class="flex h-full w-full items-center"><div style="--max-height: 80vh;"${attr("class", `${stringify(klass)} mx-auto flex h-full max-h-[--max-height] w-full flex-col bg-white lg:h-[--max-height] lg:max-w-[min(934px,100vw)] lg:rounded`)}><!---->`;
+    slot($$payload, $$props, "default", {});
+    $$payload.out += `<!----></div></div></section>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]-->`;
+  bind_props($$props, { class: klass, isOpen });
+}
+function Spinner($$payload) {
+  $$payload.out += `<div class="fixed inset-0 z-[99999999999999999999999999999999999999999999999999999] grid place-items-center bg-secondary/5"><svg aria-hidden="true" class="inline h-20 w-20 animate-spin fill-accent text-secondary/20" fill="none" viewBox="0 0 100 101" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"></path><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"></path></svg></div>`;
+}
+function Input($$payload, $$props) {
+  let {
+    placeholder = "",
+    value = "",
+    label = "",
+    id = "",
+    type: itype = "",
+    min,
+    max,
+    readonly = false
+  } = $$props;
+  $$payload.out += `<div class="relative w-full">`;
+  if (label) {
+    $$payload.out += "<!--[-->";
+    Label($$payload, { id, text: label });
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]--> <input${attr("value", value)}${attr("class", `block ${stringify(readonly ? "bg-light/50" : "")} min-h-[42px] w-full rounded border border-light bg-gray-50 p-2 px-4 text-sm text-secondary focus:border-accent focus:ring-accent`)}${attr("id", id)}${attr("max", max)}${attr("min", min)}${attr("placeholder", placeholder)}${attr("readonly", readonly, true)}${attr("type", itype)}></div>`;
+  bind_props($$props, { value });
+}
+function PaymentMethodsPanel($$payload, $$props) {
+  push();
+  let {
+    orderTotal,
+    onPaymentChange,
+    hasBalance = false,
+    isCredit
+  } = $$props;
+  const availablePaymentMethods = paymentMethodsApiStore.get().data || ["Cash"];
+  let paymentAmounts = Object.fromEntries(availablePaymentMethods.map((method, index) => [method, index === 0 ? orderTotal : 0]));
+  let totalPaid = Object.values(paymentAmounts).reduce((sum, amount) => sum + amount, 0);
+  let remainingBalance = orderTotal - totalPaid;
+  function getMaxForMethod(currentMethod) {
+    return paymentAmounts[currentMethod] + remainingBalance;
+  }
+  const each_array = ensure_array_like(Object.entries(paymentAmounts));
+  $$payload.out += `<div class="payment-methods h-fit rounded bg-white"><h3 class="mb-3 text-base font-semibold">Payment Methods</h3> <div class="grid gap-2"><!--[-->`;
+  for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+    let [method, amount] = each_array[$$index];
+    $$payload.out += `<div class="flex items-center gap-2"><label${attr("for", `payment-${stringify(method)}`)} class="w-24 text-sm capitalize text-gray-600">${escape_html(method)}:</label> <input${attr("id", `payment-${stringify(method)}`)} type="number"${attr("disabled", isCredit, true)} class="focus:ring-primary flex-1 rounded border p-1.5 text-sm focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50" placeholder="0.00" min="0"${attr("max", getMaxForMethod(method))} step="0.01"${attr("value", amount)}></div>`;
+  }
+  $$payload.out += `<!--]--> <div class="mt-2 grid grid-cols-2 gap-2 border-t pt-2 text-sm font-medium"><div class="flex items-center justify-between"><span class="text-gray-600">Total Paid:</span> <span>D${escape_html(totalPaid.toFixed(2))}</span></div> <div class="flex items-center justify-between"><span class="text-gray-600">Remaining:</span> <span${attr("class", clsx(remainingBalance > 0 ? "text-red-500" : "text-green-500"))}>D${escape_html(remainingBalance.toFixed(2))}</span></div></div></div></div>`;
+  bind_props($$props, { hasBalance });
+  pop();
+}
+function OngoingOrderModalContentDetails($$payload, $$props) {
+  push();
+  let {
+    order = void 0,
+    hasBalance = false,
+    isCredit
+  } = $$props;
+  const orderCustomer = customersApiStore.get().data.find((c) => c.name === order.customer);
+  const isManagement = orderCustomer?.is_management;
+  const keys = ["order_type", "room", "table", "total"];
+  function handlePaymentChange(newPayments) {
+    order.payments = Object.entries(newPayments).map(([method, amount]) => ({ mode_of_payment: method, amount })).filter((p) => p.amount > 0);
+  }
+  let $$settled = true;
+  let $$inner_payload;
+  function $$render_inner($$payload2) {
+    const each_array = ensure_array_like(keys);
+    const each_array_1 = ensure_array_like(order.items);
+    $$payload2.out += `<div class="grid grid-cols-2 gap-4">`;
+    PaymentMethodsPanel($$payload2, {
+      onPaymentChange: handlePaymentChange,
+      orderTotal: order.total,
+      isCredit,
+      get hasBalance() {
+        return hasBalance;
+      },
+      set hasBalance($$value) {
+        hasBalance = $$value;
+        $$settled = false;
+      }
+    });
+    $$payload2.out += `<!----> <div class="flex flex-col gap-2"><div class="body grid grid-cols-2 gap-1 rounded bg-white p-2 text-sm"><!--[-->`;
+    for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+      let key = each_array[$$index];
+      const value = isManagement ? "Management" : key !== "is_paid" ? order[key] : order[key] ? "YES" : "NO";
+      $$payload2.out += `<p${attr("class", `text-xs uppercase ${stringify([!value ? "hidden" : ""].filter(Boolean).join(" "))}`)}><span class="text-gray-600">${escape_html(key.replace("_", " "))}:</span> <span class="font-medium">${escape_html(value)}</span></p>`;
+    }
+    $$payload2.out += `<!--]--></div> <div><div class="scrollbar relative max-h-[calc(var(--max-height)-20rem)] overflow-auto rounded bg-white svelte-150l0ix"><table class="w-full table-auto border-collapse border-spacing-0 select-none text-left text-sm text-secondary"><thead class="sticky top-0 bg-light text-xs uppercase text-secondary"><tr><th class="p-1.5 svelte-150l0ix">Product</th><th class="w-16 p-1.5 text-center svelte-150l0ix">Qty</th><th class="w-20 p-1.5 text-right svelte-150l0ix">Price</th></tr></thead><tbody><!--[-->`;
+    for (let $$index_1 = 0, $$length = each_array_1.length; $$index_1 < $$length; $$index_1++) {
+      let item = each_array_1[$$index_1];
+      $$payload2.out += `<tr class="border-b bg-white hover:bg-light/30"><td class="p-1.5 font-medium text-secondary">${escape_html(item.name)}</td><td class="p-1.5 text-center">${escape_html(item.quantity)}</td><td class="p-1.5 text-right font-medium text-secondary">D${escape_html(item.price)}</td></tr>`;
+    }
+    $$payload2.out += `<!--]--><tr class="sticky bottom-0 border-t bg-white text-base font-bold text-secondary hover:bg-light/30"><td class="p-1.5">Total</td><td class="p-1.5"></td><td class="p-1.5 text-right">D${escape_html(order.total)}</td></tr></tbody></table></div></div></div></div>`;
+  }
+  do {
+    $$settled = true;
+    $$inner_payload = copy_payload($$payload);
+    $$render_inner($$inner_payload);
+  } while (!$$settled);
+  assign_payload($$payload, $$inner_payload);
+  bind_props($$props, { order, hasBalance });
+  pop();
+}
+function ActiveOngoingOrderModalContent($$payload, $$props) {
+  push();
+  var $$store_subs;
+  let isValid, customerChange;
+  const discountOptions = [
+    { name: "Percentage", value: "Percentage" },
+    { name: "Amount", value: "Amount" }
+  ];
+  let discountValue = "";
+  let amountPaid = String(store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder)?.total || 0);
+  let amountDue = String(store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder)?.total || 0);
+  let isCredit = false;
+  let roomService = false;
+  let submit = false;
+  let hasBalance = false;
+  let isPrinting = false;
+  if (store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder)) {
+    store_mutate($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder, store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder).discount = Number(discountValue || 0));
+  }
+  isValid = !(!isCredit && hasBalance);
+  customerChange = String(+amountPaid - +amountDue);
+  console.log({
+    $activeOngoingOrder: store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder),
+    $currentUserSession: store_get($$store_subs ??= {}, "$currentUserSession", currentUserSession),
+    isCredit,
+    isValid,
+    hasBalance
+  });
+  let $$settled = true;
+  let $$inner_payload;
+  function $$render_inner($$payload2) {
+    $$payload2.out += `<!---->`;
+    {
+      if (store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder)) {
+        $$payload2.out += "<!--[-->";
+        Receipt($$payload2, {
+          order: store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder),
+          cashierName: store_get($$store_subs ??= {}, "$currentUserSession", currentUserSession)?.fullname || "",
+          completed: submit,
+          isCredit
+        });
+      } else {
+        $$payload2.out += "<!--[!-->";
+      }
+      $$payload2.out += `<!--]-->`;
+    }
+    $$payload2.out += `<!----> `;
+    if (store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder)) {
+      $$payload2.out += "<!--[-->";
+      const customers = customersApiStore.get().data;
+      const orderCustomer = customers.find((c) => c.name === store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder)?.customer);
+      const isWalkin = !orderCustomer || String(orderCustomer.name).toLowerCase() === "walkin";
+      $$payload2.out += `<div class="print-out flex h-full flex-col justify-between gap-4">`;
+      OngoingOrderModalContentDetails($$payload2, {
+        isCredit,
+        order: store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder),
+        get hasBalance() {
+          return hasBalance;
+        },
+        set hasBalance($$value) {
+          hasBalance = $$value;
+          $$settled = false;
+        }
+      });
+      $$payload2.out += `<!----> <div class="grid grid-cols-2 gap-2"><div class="print-grid-cols-full flex flex-col gap-4"><div class="hidden"><div class="grid grid-cols-2 gap-3">`;
+      Select($$payload2, {
+        label: "Discount Type",
+        options: discountOptions,
+        get value() {
+          return store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder).discount_type;
+        },
+        set value($$value) {
+          store_mutate($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder, store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder).discount_type = $$value);
+          $$settled = false;
+        }
+      });
+      $$payload2.out += `<!----> `;
+      Input($$payload2, {
+        id: "discount-value",
+        type: "number",
+        label: `Discount value ${stringify(store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder).discount_type === "Amount" ? "(D)" : "(%)")}`,
+        get value() {
+          return discountValue;
+        },
+        set value($$value) {
+          discountValue = $$value;
+          $$settled = false;
+        }
+      });
+      $$payload2.out += `<!----></div></div> <div class="grid grid-cols-3 gap-3"><h2 class="col-span-3 font-bold">Calculator</h2> `;
+      Input($$payload2, {
+        readonly: true,
+        value: amountDue,
+        id: "amountDue-value",
+        type: "number",
+        label: "Total Amount"
+      });
+      $$payload2.out += `<!----> `;
+      Input($$payload2, {
+        min: +amountDue,
+        id: "amountPaid-value",
+        type: "number",
+        label: "Paid Amount",
+        get value() {
+          return amountPaid;
+        },
+        set value($$value) {
+          amountPaid = $$value;
+          $$settled = false;
+        }
+      });
+      $$payload2.out += `<!----> `;
+      Input($$payload2, {
+        readonly: true,
+        value: String(Math.max(0, Number(customerChange))),
+        id: "customerChange-value",
+        type: "number",
+        label: "Customer Change"
+      });
+      $$payload2.out += `<!----></div></div> <div class="print-out grid place-items-end"><div class="flex flex-col items-end justify-end gap-4">`;
+      {
+        $$payload2.out += "<!--[-->";
+        if (!orderCustomer?.is_management) {
+          $$payload2.out += "<!--[-->";
+          $$payload2.out += `<div class="flex gap-4">`;
+          if (store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder).order_type === "room_service" && !store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder).table) {
+            $$payload2.out += "<!--[-->";
+            CheckboxInput($$payload2, {
+              text: "Room service",
+              get checked() {
+                return roomService;
+              },
+              set checked($$value) {
+                roomService = $$value;
+                $$settled = false;
+              }
+            });
+          } else {
+            $$payload2.out += "<!--[!-->";
+          }
+          $$payload2.out += `<!--]--> `;
+          if (!isWalkin) {
+            $$payload2.out += "<!--[-->";
+            CheckboxInput($$payload2, {
+              text: "Credit sales",
+              get checked() {
+                return isCredit;
+              },
+              set checked($$value) {
+                isCredit = $$value;
+                $$settled = false;
+              }
+            });
+          } else {
+            $$payload2.out += "<!--[!-->";
+          }
+          $$payload2.out += `<!--]--></div>`;
+        } else {
+          $$payload2.out += "<!--[!-->";
+        }
+        $$payload2.out += `<!--]-->`;
+      }
+      $$payload2.out += `<!--]--> <div class="btn-actions flex gap-4">`;
+      if (store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder).order_id) {
+        $$payload2.out += "<!--[-->";
+        $$payload2.out += `<button type="button" class="flex items-center justify-center gap-2 rounded bg-secondary p-2 text-white svelte-11yptvf"${attr("disabled", isPrinting, true)}>`;
+        {
+          $$payload2.out += "<!--[!-->";
+        }
+        $$payload2.out += `<!--]--> Print Order</button>`;
+      } else {
+        $$payload2.out += "<!--[!-->";
+      }
+      $$payload2.out += `<!--]--> `;
+      {
+        $$payload2.out += "<!--[-->";
+        $$payload2.out += `<button class="rounded bg-accent p-3 text-white svelte-11yptvf"${attr("disabled", !isValid, true)}>Complete Order</button>`;
+      }
+      $$payload2.out += `<!--]--></div></div></div></div></div>`;
+    } else {
+      $$payload2.out += "<!--[!-->";
+    }
+    $$payload2.out += `<!--]-->`;
+  }
+  do {
+    $$settled = true;
+    $$inner_payload = copy_payload($$payload);
+    $$render_inner($$inner_payload);
+  } while (!$$settled);
+  assign_payload($$payload, $$inner_payload);
+  if ($$store_subs) unsubscribe_stores($$store_subs);
+  pop();
+}
+function Toast($$payload, $$props) {
+  push();
+  var $$store_subs;
+  let id = fallback($$props["id"], "");
+  let type = fallback($$props["type"], "success");
+  let message = fallback($$props["message"], "");
+  let index = fallback($$props["index"], 0);
+  let onClose = fallback($$props["onClose"], () => {
+  });
+  let timeout = fallback($$props["timeout"], 5e3);
+  const toastHeight = 70;
+  let topOffset = writable(index * toastHeight);
+  const types = {
+    success: {
+      color: "text-green-500 bg-green-100",
+      iconPath: "M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z",
+      iconLabel: "Check icon"
+    },
+    danger: {
+      color: "text-red-500 bg-red-100",
+      iconPath: "M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414Z",
+      iconLabel: "Error icon"
+    },
+    warning: {
+      color: "text-orange-500 bg-orange-100",
+      iconPath: "M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z",
+      iconLabel: "Warning icon"
+    }
+  };
+  const { color, iconPath, iconLabel } = types[type];
+  $$payload.out += `<div class="fixed left-8 z-[9999999] mb-4 flex w-full max-w-xs items-center rounded-lg bg-white p-4 text-gray-500 shadow"${attr("id", id)} role="alert"${attr("style", `bottom: ${stringify(store_get($$store_subs ??= {}, "$topOffset", topOffset))}px;`)}><div${attr("class", `inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${color}`)}><svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path${attr("d", iconPath)}></path></svg> <span class="sr-only">${escape_html(iconLabel)}</span></div> <div class="ms-3 text-sm font-normal">${escape_html(message)}</div> <button aria-label="Close" class="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-gray-300" type="button"><span class="sr-only">Close</span> <svg aria-hidden="true" class="h-3 w-3" fill="none" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><path d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button></div>`;
+  if ($$store_subs) unsubscribe_stores($$store_subs);
+  bind_props($$props, {
+    id,
+    type,
+    message,
+    index,
+    onClose,
+    timeout
+  });
+  pop();
+}
+function MergeOngoingOrderModalContent($$payload, $$props) {
+  push();
+  var $$store_subs;
+  let customerChange;
+  const mergeOrders = (orders) => {
+    const rooms = Array.from(new Set(orders.map((order) => order.room).filter((r) => !!r)));
+    const customers = Array.from(new Set(orders.map((order) => order.customer).filter((r) => !!r)));
+    const items = orders.reduce(
+      (allItems, order) => {
+        for (const item of order.items) {
+          const prevItem = allItems.find((i) => i.name === item.name);
+          if (prevItem) {
+            item.quantity = item.quantity + prevItem.quantity;
+            allItems = allItems.filter((i) => i.name !== item.name);
+          }
+          allItems.push(item);
+        }
+        return allItems;
+      },
+      []
+    );
+    const total = items.map((i) => Number(i.price) * i.quantity).reduce((total2, price) => price + total2, 0);
+    const mergedOrders2 = {
+      prev_order_ids: orders.map((order) => String(order.order_id)).filter(Boolean),
+      prev_refs: orders.map((order) => String(order.ref)).filter(Boolean),
+      order_id: "",
+      ref: getHash(),
+      order_type: (orders.find((order) => order.room) || orders[0]).order_type,
+      total,
+      table: orders.find((order) => order.table)?.table || "",
+      // TODO: maybe introduce tables
+      room: rooms[0] || "",
+      customer: customers[0] || "",
+      // is_paid: 0,
+      items
+    };
+    return mergedOrders2;
+  };
+  const discountOptions = [
+    { name: "Percentage", value: "Percentage" },
+    { name: "Amount", value: "Amount" }
+  ];
+  let discountValue = "";
+  let mergedOrders = store_get($$store_subs ??= {}, "$mergingOngoingOrders", mergingOngoingOrders)[0];
+  let amountPaid = String(mergedOrders?.total || 0);
+  let amountDue = String(mergedOrders?.total || 0);
+  let saved = false;
+  mergedOrders = mergeOrders(store_get($$store_subs ??= {}, "$mergingOngoingOrders", mergingOngoingOrders));
+  if (mergedOrders) {
+    mergedOrders.discount = Number(discountValue || 0);
+  }
+  customerChange = String(+amountPaid - +amountDue);
+  let $$settled = true;
+  let $$inner_payload;
+  function $$render_inner($$payload2) {
+    if (mergedOrders) {
+      $$payload2.out += "<!--[-->";
+      $$payload2.out += `<div class="print flex h-full flex-col justify-between gap-4">`;
+      OngoingOrderModalContentDetails($$payload2, {
+        get order() {
+          return mergedOrders;
+        },
+        set order($$value) {
+          mergedOrders = $$value;
+          $$settled = false;
+        }
+      });
+      $$payload2.out += `<!----> <div class="grid grid-cols-2 gap-2"><div class="print-grid-cols-full flex flex-col gap-4"><div class="hidden"><div class="grid grid-cols-2 gap-3">`;
+      Select($$payload2, {
+        label: "Discount Type",
+        options: discountOptions,
+        get value() {
+          return mergedOrders.discount_type;
+        },
+        set value($$value) {
+          mergedOrders.discount_type = $$value;
+          $$settled = false;
+        }
+      });
+      $$payload2.out += `<!----> `;
+      Input($$payload2, {
+        id: "discount-value",
+        type: "number",
+        label: `Discount value ${stringify(mergedOrders.discount_type === "Amount" ? "(D)" : "(%)")}`,
+        get value() {
+          return discountValue;
+        },
+        set value($$value) {
+          discountValue = $$value;
+          $$settled = false;
+        }
+      });
+      $$payload2.out += `<!----></div></div> <div class="grid grid-cols-3 gap-3">`;
+      Input($$payload2, {
+        readonly: true,
+        value: amountDue,
+        id: "amountDue-value",
+        type: "number",
+        label: "Total Amount"
+      });
+      $$payload2.out += `<!----> `;
+      Input($$payload2, {
+        min: +amountDue,
+        readonly: saved,
+        id: "amountPaid-value",
+        type: "number",
+        label: "Paid Amount",
+        get value() {
+          return amountPaid;
+        },
+        set value($$value) {
+          amountPaid = $$value;
+          $$settled = false;
+        }
+      });
+      $$payload2.out += `<!----> `;
+      Input($$payload2, {
+        readonly: true,
+        value: String(Math.max(0, Number(customerChange))),
+        id: "customerChange-value",
+        type: "number",
+        label: "Customer Change"
+      });
+      $$payload2.out += `<!----></div></div> <div class="print-out grid place-items-end"><div class="flex flex-wrap-reverse items-end justify-end gap-4">`;
+      {
+        $$payload2.out += "<!--[-->";
+        $$payload2.out += `<button class="rounded bg-accent p-2 text-white">Merge Order</button>`;
+      }
+      $$payload2.out += `<!--]--></div></div></div></div>`;
+    } else {
+      $$payload2.out += "<!--[!-->";
+    }
+    $$payload2.out += `<!--]-->`;
+  }
+  do {
+    $$settled = true;
+    $$inner_payload = copy_payload($$payload);
+    $$render_inner($$inner_payload);
+  } while (!$$settled);
+  assign_payload($$payload, $$inner_payload);
+  if ($$store_subs) unsubscribe_stores($$store_subs);
+  pop();
+}
+function ConfirmDelete($$payload, $$props) {
+  push();
+  let visible = fallback($$props["visible"], false);
+  let title = fallback($$props["title"], "Are you sure you want to delete this product?");
+  let confirmText = fallback($$props["confirmText"], "Yes, I'm sure");
+  let cancelText = fallback($$props["cancelText"], "No, cancel");
+  let onClose = fallback($$props["onClose"], () => {
+  });
+  let onConfirm = fallback($$props["onConfirm"], () => {
+  });
+  if (visible) {
+    $$payload.out += "<!--[-->";
+    $$payload.out += `<div id="popup-modal" tabindex="-1" class="fixed inset-0 z-50 flex h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden"><div class="relative max-h-full w-full max-w-md p-4"><div class="relative rounded-lg bg-white shadow"><button type="button" class="absolute right-2.5 top-3 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-light hover:text-secondary"><svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path></svg> <span class="sr-only">Close modal</span></button> <div class="p-4 text-center md:p-5"><svg class="mx-auto mb-4 h-12 w-12 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path></svg> <h3 class="subheading mb-5">${escape_html(title)}</h3> <button type="button" class="inline-flex items-center rounded bg-attention px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">${escape_html(confirmText)}</button> <button type="button" class="ms-3 rounded border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-secondary hover:bg-gray-100 hover:text-accent focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100">${escape_html(cancelText)}</button></div></div></div></div>`;
+  } else {
+    $$payload.out += "<!--[!-->";
+  }
+  $$payload.out += `<!--]-->`;
+  bind_props($$props, {
+    visible,
+    title,
+    confirmText,
+    cancelText,
+    onClose,
+    onConfirm
+  });
+  pop();
+}
+function RadioGroup($$payload, $$props) {
+  push();
+  let options = fallback($$props["options"], () => [], true);
+  let value = fallback($$props["value"], "");
+  let name = fallback($$props["name"], () => randomString(5), true);
+  let klass = fallback($$props["class"], "");
+  if (!value && options.length > 0) value = options[0].value;
+  const each_array = ensure_array_like(options);
+  $$payload.out += `<div${attr("class", `flex flex-col gap-3 ${stringify(klass)}`)}><!--[-->`;
+  for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+    let option = each_array[$$index];
+    const selected = value === option.value;
+    $$payload.out += `<label${attr("class", `body flex cursor-pointer items-center gap-3 rounded-lg border border-solid border-[#DAD9DA] py-[18px] pl-[18px] pr-[13px] text-secondary ${stringify(selected ? "bg-light" : "")}`)}><input type="radio" class="hidden"${attr("value", option.value)}${attr("name", name)}${attr("checked", value === option.value, true)}> `;
+    if (selected) {
+      $$payload.out += "<!--[-->";
+      $$payload.out += `<span class="flex h-6 min-h-[24px] w-6 min-w-[24px] items-center justify-center rounded-full border border-accent p-[2px]"><span class="h-full w-full rounded-full bg-accent"></span></span>`;
+    } else {
+      $$payload.out += "<!--[!-->";
+      $$payload.out += `<span class="flex h-6 min-h-[24px] w-6 min-w-[24px] items-center justify-center rounded-full border border-secondary"></span>`;
+    }
+    $$payload.out += `<!--]--> <div class="flex items-center gap-2"><span class="text-base font-semibold tracking-[0.16px] text-secondary">${escape_html(option.name)}</span></div></label>`;
+  }
+  $$payload.out += `<!--]--> <input class="hidden" type="text" required${attr("value", value)}></div>`;
+  bind_props($$props, { options, value, name, class: klass });
+  pop();
+}
+function OpenShift($$payload, $$props) {
+  push();
+  var $$store_subs;
+  const options = (store_get($$store_subs ??= {}, "$page", page).data.session.profiles || []).map((p) => ({ name: p, value: p }));
+  console.log({ options });
+  let posProfile;
+  let openingBalance = "1000";
+  let $$settled = true;
+  let $$inner_payload;
+  function $$render_inner($$payload2) {
+    $$payload2.out += `<div class="relative z-20 flex h-full w-full flex-col justify-between gap-4 px-4 pb-4 pt-3 lg:px-8 lg:py-[22px] lg:pb-[50px]"><div class="flex flex-col gap-6"><div class="flex h-min w-full items-center"><h2 class="text-xl font-bold">Select Profile</h2></div> <div class="flex flex-col gap-6">`;
+    RadioGroup($$payload2, {
+      options,
+      get value() {
+        return posProfile;
+      },
+      set value($$value) {
+        posProfile = $$value;
+        $$settled = false;
+      }
+    });
+    $$payload2.out += `<!----> `;
+    Input($$payload2, {
+      label: "Opening Balance",
+      type: "number",
+      get value() {
+        return openingBalance;
+      },
+      set value($$value) {
+        openingBalance = $$value;
+        $$settled = false;
+      }
+    });
+    $$payload2.out += `<!----></div></div> <div class="flex items-end justify-end gap-6"><a class="rounded bg-secondary p-3 text-white" data-sveltekit-reload="" href="/app">Go to app</a> <button${attr("disabled", options.length === 0, true)} class="rounded bg-accent p-3 text-white svelte-848u57">Open Shift</button></div></div>`;
+  }
+  do {
+    $$settled = true;
+    $$inner_payload = copy_payload($$payload);
+    $$render_inner($$inner_payload);
+  } while (!$$settled);
+  assign_payload($$payload, $$inner_payload);
+  if ($$store_subs) unsubscribe_stores($$store_subs);
+  pop();
+}
+function KeyValue($$payload, key, value) {
+  $$payload.out += `<div class="grid grid-cols-2 gap-1"><p class="capitalize">${escape_html(generateLabelFromKey(key))}:</p> <p class="font-medium">${escape_html(typeof value == "number" ? "D" : "")}${escape_html(value ?? "N/A")}</p></div>`;
+}
+function ShiftReport($$payload, $$props) {
+  push();
+  const settings = posSettingsApiStore.get().data || {};
+  let {
+    businessName = settings.business_name,
+    // 'Baobab Holiday Resort',
+    heroImage = settings.print_logo,
+    //assets+'/baobab.jpg',
+    address = settings.address,
+    //'Bijilo, Banjul',
+    contact = settings.contact
+    //'+220 3774608/ +220 7572632',2632'
+  } = $$props;
+  function humanReadableDateTime(dateInput) {
+    const date = new Date(dateInput);
+    const options = {
+      weekday: "short",
+      // E.g., 'Mon'
+      year: "numeric",
+      // E.g., '2024'
+      month: "short",
+      // E.g., 'Sep'
+      day: "numeric",
+      // E.g., '13'
+      hour: "2-digit",
+      // E.g., '02' or '14'
+      minute: "2-digit",
+      // E.g., '30'
+      hour12: false
+      // 24-hour format
+    };
+    return date.toLocaleString("en-US", options);
+  }
+  let outletInfo = {};
+  let shiftTimes = {};
+  let salesSummary = {};
+  let payment_sales = {};
+  let creditInfo = {};
+  let managementInfo = {};
+  shiftSales.subscribe((value) => {
+    const {
+      cashier,
+      outlet,
+      shift_opened = Date.now(),
+      shift_closed = Date.now(),
+      gross_sales = 0,
+      total_sales = 0,
+      payment_sales: paymentSales,
+      discounts = 0,
+      // sales info
+      credit_sales = 0,
+      differences = 0,
+      management = 0
+    } = value || {};
+    outletInfo = { cashier, outlet };
+    shiftTimes = {
+      shift_opened: humanReadableDateTime(shift_opened),
+      shift_closed: humanReadableDateTime(shift_closed)
+    };
+    salesSummary = { gross_sales, discounts, total_sales };
+    payment_sales = paymentSales || {};
+    managementInfo = { management };
+    creditInfo = { credit_sales };
+    console.log({ value, shiftTimes });
+  });
+  const each_array = ensure_array_like(Object.entries(outletInfo));
+  const each_array_1 = ensure_array_like(Object.entries(shiftTimes));
+  const each_array_2 = ensure_array_like(Object.entries(payment_sales));
+  const each_array_3 = ensure_array_like(Object.entries(creditInfo));
+  const each_array_4 = ensure_array_like(Object.entries(managementInfo));
+  const each_array_5 = ensure_array_like(Object.entries(salesSummary));
+  $$payload.out += `<div class="print flex h-full w-full flex-col justify-between"><section class="mx-auto flex flex-col items-center justify-center gap-2.5"><div class="grid place-items-center font-semibold"><img${attr("src", heroImage)} class="mb-2 h-20 max-w-full object-contain" alt="baobab"> <h1>${escape_html(businessName)}</h1> <p>${escape_html(address)}</p> <p>${escape_html(contact)}</p></div> <h1 class="print-only font-bold">Shift Report</h1> <div class="w-full"><!--[-->`;
+  for (let $$index = 0, $$length = each_array.length; $$index < $$length; $$index++) {
+    let [key, value] = each_array[$$index];
+    KeyValue($$payload, key, value);
+  }
+  $$payload.out += `<!--]--></div> <div class="w-full"><!--[-->`;
+  for (let $$index_1 = 0, $$length = each_array_1.length; $$index_1 < $$length; $$index_1++) {
+    let [key, value] = each_array_1[$$index_1];
+    KeyValue($$payload, key, value);
+  }
+  $$payload.out += `<!--]--></div> <div class="w-full"><h2 class="rounded border border-secondary/50 text-center font-semibold">Payment sales</h2> <!--[-->`;
+  for (let $$index_2 = 0, $$length = each_array_2.length; $$index_2 < $$length; $$index_2++) {
+    let [key, value] = each_array_2[$$index_2];
+    KeyValue($$payload, key, value);
+  }
+  $$payload.out += `<!--]--></div> <div class="w-full"><h2 class="rounded border border-secondary/50 text-center font-semibold">Credit sales</h2> <!--[-->`;
+  for (let $$index_3 = 0, $$length = each_array_3.length; $$index_3 < $$length; $$index_3++) {
+    let [key, value] = each_array_3[$$index_3];
+    KeyValue($$payload, key, value);
+  }
+  $$payload.out += `<!--]--></div> <div class="w-full"><h2 class="rounded border border-secondary/50 text-center font-semibold">Management</h2> <!--[-->`;
+  for (let $$index_4 = 0, $$length = each_array_4.length; $$index_4 < $$length; $$index_4++) {
+    let [key, value] = each_array_4[$$index_4];
+    KeyValue($$payload, key, value);
+  }
+  $$payload.out += `<!--]--></div> <div class="w-full"><h2 class="rounded border border-secondary/50 text-center font-semibold">Sales Summary</h2> <!--[-->`;
+  for (let $$index_5 = 0, $$length = each_array_5.length; $$index_5 < $$length; $$index_5++) {
+    let [key, value] = each_array_5[$$index_5];
+    KeyValue($$payload, key, value);
+  }
+  $$payload.out += `<!--]--></div></section> <div class="print-out grid w-full grid-cols-2 gap-4"><a href="/app" data-sveltekit-reload="" class="rounded border border-secondary p-1.5 px-2.5 text-center text-secondary hover:border-secondary">Go to app</a> <button class="rounded bg-secondary p-1.5 px-2.5 text-white svelte-sa2fs4">Print</button></div></div>`;
+  pop();
+}
+function _layout($$payload, $$props) {
+  push();
+  var $$store_subs;
+  let isActiveOngoingOrderModal;
+  let data = $$props["data"];
+  let showShiftSalesCloseBtn = false;
+  isActiveOngoingOrderModal = Boolean(store_get($$store_subs ??= {}, "$isModalOpen", isModalOpen) && (store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder) || store_get($$store_subs ??= {}, "$mergingOngoingOrders", mergingOngoingOrders).length > 1));
+  let $$settled = true;
+  let $$inner_payload;
+  function $$render_inner($$payload2) {
+    const each_array = ensure_array_like(store_get($$store_subs ??= {}, "$toasts", toasts));
+    if (data.selectedOutlet) {
+      $$payload2.out += "<!--[-->";
+      $$payload2.out += `<main${attr("class", `${stringify(store_get($$store_subs ??= {}, "$showLoadingSpinner", showLoadingSpinner) || isActiveOngoingOrderModal || store_get($$store_subs ??= {}, "$confirmDeleteStore", confirmDeleteStore) ? "blur-sm" : "")} scrollbar scrollbar-sm flex h-screen w-screen flex-col gap-3`)}>`;
+      Nav($$payload2, {
+        get showShiftSalesCloseBtn() {
+          return showShiftSalesCloseBtn;
+        },
+        set showShiftSalesCloseBtn($$value) {
+          showShiftSalesCloseBtn = $$value;
+          $$settled = false;
+        }
+      });
+      $$payload2.out += `<!----> <!---->`;
+      slot($$payload2, $$props, "default", {});
+      $$payload2.out += `<!----></main> `;
+      Modal($$payload2, {
+        isOpen: isActiveOngoingOrderModal,
+        children: ($$payload3) => {
+          $$payload3.out += `<div class="relative z-20 flex h-full w-full flex-col gap-4 px-4 pb-4 pt-3 lg:block lg:px-8 lg:py-[22px] lg:pb-[50px]"><div class="flex h-min w-full items-center justify-end"><button class="flex h-[26px] w-[26px] items-center justify-center rounded-full hover:bg-light/40 hover:p-[2px]">`;
+          X_close($$payload3);
+          $$payload3.out += `<!----></button></div> `;
+          if (store_get($$store_subs ??= {}, "$activeOngoingOrder", activeOngoingOrder)) {
+            $$payload3.out += "<!--[-->";
+            ActiveOngoingOrderModalContent($$payload3);
+          } else {
+            $$payload3.out += "<!--[!-->";
+            if (store_get($$store_subs ??= {}, "$mergingOngoingOrders", mergingOngoingOrders).length) {
+              $$payload3.out += "<!--[-->";
+              MergeOngoingOrderModalContent($$payload3);
+            } else {
+              $$payload3.out += "<!--[!-->";
+            }
+            $$payload3.out += `<!--]-->`;
+          }
+          $$payload3.out += `<!--]--></div>`;
+        },
+        $$slots: { default: true }
+      });
+      $$payload2.out += `<!---->`;
+    } else {
+      $$payload2.out += "<!--[!-->";
+    }
+    $$payload2.out += `<!--]--> `;
+    Modal($$payload2, {
+      class: "!max-w-lg",
+      isOpen: !data.selectedOutlet,
+      children: ($$payload3) => {
+        OpenShift($$payload3);
+      },
+      $$slots: { default: true }
+    });
+    $$payload2.out += `<!----> `;
+    Modal($$payload2, {
+      class: "!max-w-lg",
+      isOpen: store_get($$store_subs ??= {}, "$showCloseShiftReport", showCloseShiftReport),
+      children: ($$payload3) => {
+        $$payload3.out += `<div class="relative z-20 flex h-full w-full flex-col gap-4 px-4 pb-4 pt-3 lg:block lg:px-8 lg:py-[22px] lg:pb-[50px]">`;
+        if (showShiftSalesCloseBtn) {
+          $$payload3.out += "<!--[-->";
+          $$payload3.out += `<div class="absolute -left-4 flex h-min w-full items-center justify-end"><button class="flex h-[26px] w-[26px] items-center justify-center rounded-full hover:bg-light/40 hover:p-[2px]">`;
+          X_close($$payload3);
+          $$payload3.out += `<!----></button></div>`;
+        } else {
+          $$payload3.out += "<!--[!-->";
+        }
+        $$payload3.out += `<!--]--> `;
+        ShiftReport($$payload3, {});
+        $$payload3.out += `<!----></div>`;
+      },
+      $$slots: { default: true }
+    });
+    $$payload2.out += `<!----> `;
+    ConfirmDelete($$payload2, {
+      onClose: onCancelDelete,
+      onConfirm: onConfirmDelete,
+      title: store_get($$store_subs ??= {}, "$confirmDeleteStore", confirmDeleteStore)?.title,
+      visible: !!store_get($$store_subs ??= {}, "$confirmDeleteStore", confirmDeleteStore)
+    });
+    $$payload2.out += `<!----> <!--[-->`;
+    for (let index = 0, $$length = each_array.length; index < $$length; index++) {
+      let toast = each_array[index];
+      $$payload2.out += `<div class="print-out z-[9999999]">`;
+      Toast($$payload2, {
+        id: toast.id,
+        index,
+        type: toast.type,
+        message: toast.message,
+        timeout: toast.timeout,
+        onClose: () => removeToast(toast.id)
+      });
+      $$payload2.out += `<!----></div>`;
+    }
+    $$payload2.out += `<!--]--> `;
+    if (store_get($$store_subs ??= {}, "$showLoadingSpinner", showLoadingSpinner)) {
+      $$payload2.out += "<!--[-->";
+      Spinner($$payload2);
+    } else {
+      $$payload2.out += "<!--[!-->";
+    }
+    $$payload2.out += `<!--]-->`;
+  }
+  do {
+    $$settled = true;
+    $$inner_payload = copy_payload($$payload);
+    $$render_inner($$inner_payload);
+  } while (!$$settled);
+  assign_payload($$payload, $$inner_payload);
+  if ($$store_subs) unsubscribe_stores($$store_subs);
+  bind_props($$props, { data });
+  pop();
+}
+export {
+  _layout as default
+};

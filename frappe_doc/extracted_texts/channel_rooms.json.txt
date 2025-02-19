@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "creation": "2024-02-29 09:08:35.833580",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "column_break_2",
+  "room_type",
+  "column_break_4",
+  "price",
+  "guests_details_section",
+  "column_break_8",
+  "occupancy",
+  "column_break_10",
+  "children",
+  "section_break_12",
+  "extra_bed_issued",
+  "column_break_14",
+  "details"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "room_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Room Type",
+   "options": "Room Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "room_type.price",
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Price",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "guests_details_section",
+   "fieldtype": "Section Break",
+   "label": "Guests Details"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "room_type.capacity",
+   "fieldname": "occupancy",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Occupancy"
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "children",
+   "fieldtype": "Int",
+   "label": "Children"
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "extra_bed_issued",
+   "fieldtype": "Int",
+   "label": "Extra Bed Issued"
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Small Text",
+   "label": "Details"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2024-09-01 18:29:01.563161",
+ "modified_by": "Administrator",
+ "module": "Jokoor Hotel",
+ "name": "Channel Rooms",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

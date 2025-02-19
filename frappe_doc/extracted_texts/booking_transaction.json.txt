@@ -1,0 +1,120 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-08-29 17:47:37.678532",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "customer",
+  "facility",
+  "date",
+  "start_time",
+  "end_time",
+  "used_credits",
+  "refund_credits",
+  "slot_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "Customer Employees"
+  },
+  {
+   "fieldname": "facility",
+   "fieldtype": "Link",
+   "label": "Facility",
+   "options": "Facility"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Time",
+   "label": "Start Time"
+  },
+  {
+   "fieldname": "end_time",
+   "fieldtype": "Time",
+   "label": "End Time"
+  },
+  {
+   "fieldname": "used_credits",
+   "fieldtype": "Data",
+   "label": "Used Credits"
+  },
+  {
+   "fieldname": "refund_credits",
+   "fieldtype": "Data",
+   "label": "Refund Credits"
+  },
+  {
+   "fieldname": "slot_id",
+   "fieldtype": "Data",
+   "label": "Slot Id",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "user.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Customer Employees"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-09-14 16:43:31.315753",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Booking Transaction",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Space Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "if_owner": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Space User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

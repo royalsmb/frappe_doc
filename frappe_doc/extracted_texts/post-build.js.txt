@@ -1,0 +1,59 @@
+import { readdirSync, readFileSync, statSync, writeFileSync } from 'fs';
+import { extname, join } from 'path';
+import { settings } from '../svelte.config.js';
+
+/**
+ * Replaces a keyword in every file with specified extensions within a directory.
+ * @param {string} directory - The path to the directory containing the files.
+ * @param {string} keyword - The keyword to search for and replace.
+ * @param {string} replacement - The string to replace the keyword with.
+ * @param {string[]} extensions - The list of supported file extensions.
+ */
+function replaceKeywordInDirectory(
+	directory,
+	keyword,
+	replacement,
+	extensions = ['.js', '.html', '.css']
+) {
+	// Read all files in the directory
+	const files = readdirSync(directory, { recursive: true });
+
+	// Use for...of loop to iterate over files
+	for (const file of files) {
+		const filePath = join(directory, file);
+		const fileExtension = extname(file);
+
+		// Check if the path is a file and has a supported extension
+		if (statSync(filePath).isFile() && extensions.includes(fileExtension)) {
+			let content = readFileSync(filePath, 'utf8');
+
+			// Replace the keyword in the file content
+			const updatedContent = content.split(keyword).join(replacement);
+
+			// Write the modified content back to the file
+			writeFileSync(filePath, updatedContent, 'utf8');
+
+			console.log(`Replaced "${keyword}" with "${replacement}" in ${filePath}`);
+		}
+	}
+}
+
+const directoriesToProcess = [settings.assets, settings.pages]; // List of directories to process
+const buildDirectories = directoriesToProcess.map((d) => join(process.cwd(), d)); // Convert to full paths
+const keyword = settings.origin;
+const replacement = settings.relativePath;
+
+// Process each directory
+for (const directory of buildDirectories) {
+	replaceKeywordInDirectory(directory, keyword, replacement);
+}
+
+console.log(
+	'Post-build script completed successfully.',
+	'\n',
+	'Origin:',
+	keyword,
+	'\n',
+	'Relative Path:',
+	replacement
+);

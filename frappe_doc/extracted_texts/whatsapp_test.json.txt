@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-07-22 22:34:41.499699",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tt",
+  "column_break_rlapg",
+  "test_section"
+ ],
+ "fields": [
+  {
+   "default": "<div class=\"whatsapp-messages\">\nhy\n    <!-- Placeholder for dynamic content -->\n</div>\n",
+   "fieldname": "test_section",
+   "fieldtype": "HTML",
+   "label": "Test",
+   "options": "<div class=\"\">\n<div class=\"text-red\">\n<p class=\"text-red\">\nHello khan\n</p>\n</div>\n</div>"
+  },
+  {
+   "fieldname": "column_break_rlapg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tt",
+   "fieldtype": "Text",
+   "label": "tt"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-07-22 22:59:56.864051",
+ "modified_by": "Administrator",
+ "module": "Royalsmb",
+ "name": "Whatsapp Test",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

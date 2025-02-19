@@ -1,0 +1,863 @@
+import frappe
+from frappe.utils.data import cstr, flt, cint
+from frappe.utils.print_format import print_by_server
+from frappe import _
+
+# def get_customer()
+
+
+@frappe.whitelist()
+def get_warehouse(cookie_warehouse=None):
+    pos_profile = frappe.get_value("POS Shift", {
+                                   # Todo: remove hardcoded value
+                                   "user": frappe.session.user, "status": "Open"}, "pos_profile") or "Restaurant"
+
+    if not cookie_warehouse:
+        return frappe.get_value("POS Profile", pos_profile, "warehouse")
+
+    return cookie_warehouse
+
+
+@frappe.whitelist(allow_guest=True)
+def is_item_stock_available(item):
+    item = frappe.get_doc("Food Item", item)
+
+
+@frappe.whitelist(allow_guest=True)
+def create_customer():
+    try:
+        data = frappe.request.get_json()
+        customer = frappe.new_doc("Customer")
+        customer.customer_name = data['customer_name']
+        customer.phone = data['phone']
+        customer.email = data['email']
+        customer.save(ignore_permissions=True)
+        frappe.db.commit()
+        return customer
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Custom Error Log")
+        return e
+
+
+@frappe.whitelist(allow_guest=True)
+def create_draft_order():
+    data = frappe.request.get_json()
+    order_id = data['order_id'] or None
+    items = data['items']
+
+    if order_id:
+        darft_order = frappe.get_doc("Sales Invoice", order_id)
+        darft_order.items = []
+        for item in items:
+            darft_order.append("items", {
+                'item': item['name'],
+                'qty': item['quantity'],
+                'rate': item['price'],
+                'amount': float(item['quantity']) * float(item['price'])
+
+            })
+        darft_order.total_amount = sum(
+            [item.amount for item in darft_order.items])
+        darft_order.save(ignore_permissions=True)
+        frappe.db.commit()
+        return darft_order.name
+    else:
+        order = create_order(data)
+        return order.name
+
+
+@frappe.whitelist(allow_guest=True)
+def get_user_shift(profile):
+    pos_profile = frappe.get_value("POS Profile", {"name": profile}, "name")
+    user = frappe.session.user
+    shift = frappe.get_value(
+        "POS Shift", {"user": user, "status": "Open", "pos_profile": pos_profile}, "name")
+    return shift
+
+
+@frappe.whitelist(allow_guest=True)
+def submit_order():
+    data = frappe.request.get_json()
+    order_id = data['order_id'] or None
+    payments = data.get('payments', [])
+    
+    
+
+    if order_id:
+        is_paid = data['is_paid']
+        order = frappe.get_doc("Sales Invoice", order_id)
+        if payments:
+            order.is_pos = 1
+            for payment in payments:
+                order.append("payments", {
+                    "mode_of_payment": payment['mode_of_payment'],
+                    "amount": payment['amount']
+                })
+        order.save()
+        order.submit()
+        frappe.db.commit()
+        return order.name
+    else:
+        order = create_order(data)
+        order.submit()
+        frappe.db.commit()
+        return order.name
+
+
+def create_order(data):
+    import erpnext
+    warehouse = frappe.local.request.cookies.get("warehouse")
+
+    order_type = data['order_type']
+    customer = data['customer'] or None
+    items = data['items']
+    room = room = data.get('room', None)
+    table = data['table'] or None
+    company = frappe.db.get_value("Warehouse", warehouse, "company") or erpnext.get_default_company()
+    company_doc = frappe.get_doc("Company", company)
+    room_charges = data['service_charges'] or 0
+    payments = data.get('payments', [])
+
+    service_charges = 0
+    user = frappe.session.user
+
+    # if not shift:
+    #     return "User Shift is Created for this Profile"
+
+    if customer:
+        customer_doc = frappe.get_doc("Customer", customer)
+    doc = frappe.new_doc('Sales Invoice')
+    
+    doc.order_type = order_type
+    doc.company = company
+    # due date is next 30 days
+    doc.due_date = frappe.utils.add_days(frappe.utils.today(), 30)
+    doc.customer = customer
+    doc.update_stock = 1
+    doc.set_warehouse = warehouse
+    # doc.update_stock = 1
+    if payments:
+        doc.is_pos = 1
+        for payment in payments:
+            doc.append("payments", {
+                "mode_of_payment": payment['mode_of_payment'],
+                "amount": payment['amount']
+            })
+    
+    shift = frappe.get_doc(
+        "POS Shift", {"user": frappe.session.user, "status": "Open"})
+    profile = frappe.get_doc("POS Profile", shift.pos_profile)
+
+    doc.pos_profile = profile.name
+    doc.shift = shift.name
+
+    # Set attributes based on order type
+
+    for item in items:
+        item_doc = frappe.get_doc('Item', item['name'])
+        notes = item.get('notes', [])
+
+        details = str(notes)
+
+        # Getting Item default Income Account
+        default_income_account = None
+        for item_default in item_doc.item_defaults:
+            if item_default.company == company:
+                if item_default.income_account:
+                    default_income_account = item_default.income_account
+                else:
+                    default_income_account = company_doc.default_income_account
+
+        # Adding Items to Sales Invoice
+        doc.append('items', {
+            'item_code': item_doc.item_code,
+            'item_name': item_doc.item_name,
+            'description': item_doc.description,
+            'qty': item['quantity'],
+            'uom': item_doc.stock_uom,
+            'rate': item['price'],
+            'income_account': default_income_account,
+            'details': details,
+            "warehouse": warehouse
+        })
+
+        if order_type == 'room_service':
+            room_doc = frappe.get_doc("Rooms", room)
+            doc.custom_room = room
+            if frappe.db.exists("Item", "Room Service"):
+                service_charges = frappe.get_value(
+                    "Hotel Settings", None, "service_charges")
+                doc.append("items", {
+                    'item': "Room Service",
+                    'qty': 1,
+                    'rate': room_charges,
+                })
+
+    doc.save(ignore_permissions=True)
+    frappe.db.commit()
+    return doc
+
+
+@frappe.whitelist(allow_guest=True)
+def get_payment_methods():
+    warehouse = frappe.local.request.cookies.get("warehouse")
+    company = frappe.db.get_value("Warehouse", warehouse, "company")
+    shift = frappe.get_value(
+        "POS Shift", {"user": frappe.session.user, "status": "Open"}, "name")
+    profile = frappe.get_value("POS Shift", shift, "pos_profile")
+    profile_doc = frappe.get_doc("POS Profile", profile)
+    payments = []
+    for payment in profile_doc.payments:
+        payment_doc = frappe.get_doc("Mode of Payment", payment.mode_of_payment)
+        for account in payment.accounts:
+            if account.company == company:
+                payments.append(payment.mode_of_payment)
+    return payments
+
+
+@frappe.whitelist(allow_guest=True)
+def get_item_price(item):
+    item_price = frappe.db.sql(
+        """SELECT item_price FROM `tabFood Item` WHERE name=%s""", item)
+    return item_price[0][0]
+
+
+@frappe.whitelist()
+def get_customer(room):
+    room_doc = frappe.get_doc("Rooms", room)
+    customer = frappe.get_value(
+        'Customer', {'custom_guest_id': room_doc.guest_id}, 'name')
+    return customer
+
+
+@frappe.whitelist(allow_guest=True)
+def get_default_company():
+    company = frappe.get_value("Hotel Settings", None, "default_company")
+    return company
+
+
+@frappe.whitelist(allow_guest=True)
+def get_food_items():
+    try:
+        warehouse = get_warehouse()
+        items = frappe.get_all("Food Item", fields=[
+                               "name", "item_name", "item_group", "item_price", "description", "image", "maintain_stock"], order_by="name")
+        data = []
+        for item in items:
+            qty = frappe.db.get_value(
+                "Bin", {"item_code": item.item_name, "warehouse": warehouse}, "actual_qty")
+            data.append({
+                "name": item.name,
+                "product_name": item.item_name,
+                "category": item.item_group,
+                "price": item.item_price,
+                "description": item.description,
+                "image": frappe.utils.get_url(item.image) if item.image else "",
+                "is_stock": True if cint(frappe.db.get_value("Item", item.item_name, "is_stock_item")) == 1 else False,
+                "qty": qty or 0,
+                "warehouse": warehouse
+            })
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": data
+        })
+    except frappe.DoesNotExistError as e:
+        frappe.local.response.update({
+            "http_status_code": 404,
+            "error": e
+        })
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Custom Error Log")
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": e
+        })
+
+
+@frappe.whitelist(allow_guest=True)
+def get_restaurant_tables():
+    tables = frappe.get_all("Restaurant Tables", fields=[
+                            "name", "capacity"], order_by="name")
+    return tables
+
+
+@frappe.whitelist(allow_guest=True)
+def get_item_groups():
+    item_groups = frappe.get_all("Item Group", "name")
+    return item_groups
+
+
+@frappe.whitelist(allow_guest=True)
+def get_room_customer(room):
+    room_doc = frappe.get_doc("Rooms", room)
+    customer = frappe.get_value(
+        'Customer', {'custom_guest_id': room_doc.guest_id}, 'name')
+    return customer
+
+
+@frappe.whitelist(allow_guest=True)
+def get_rooms():
+    rooms = frappe.get_all("Rooms", {"room_status": "Checked In"}, {
+                           'name', 'room_name'})
+    data = []
+    for room in rooms:
+        data.append({
+            "name": room.name,
+            "room_name": room.room_name
+        })
+    return data
+
+
+@frappe.whitelist(allow_guest=True)
+def get_customers():
+    customers = frappe.get_all("Customer", fields={
+                               "name", "customer_group", "customer_name", "custom_guest_id", "phone", "email"})
+    data = []
+
+    for customer in customers:
+        room = None
+        if customer.custom_guest_id:
+            if frappe.db.exists("Hotel Check In", {"guest_id": customer.custom_guest_id, "" "status": "To Check Out"}):
+                room = frappe.db.get_value("Hotel Check In", {
+                                           "guest_id": customer.custom_guest_id, "status": "To Check Out"}, "room")
+
+        if customer.customer_group == "Management":
+            customer_group = 1
+        else:
+            customer_group = 0
+        if room:
+            data.append({
+                'name': customer.name,
+                'customer_name': customer.customer_name,
+                "is_management": customer_group,
+                "phone": customer.phone or "",
+                "email": customer.email or "",
+                "room": room
+            })
+        else:
+            data.append({
+                'name': customer.name,
+                'customer_name': customer.customer_name,
+                "is_management": customer_group,
+                "phone": customer.phone or "",
+                "email": customer.email or "",
+
+            })
+
+    return data
+
+
+@frappe.whitelist(allow_guest=True)
+def get_draft_orders():
+    warehouse = frappe.local.request.cookies.get("warehouse")
+    shift = frappe.get_value(
+        "POS Shift", {"user": frappe.session.user, "status": "Open"}, "name")
+    profile = frappe.get_value("POS Shift", shift, "pos_profile")
+    orders = frappe.get_all("Sales Invoice", {
+                            "docstatus": 0, "pos_profile": profile, "set_warehouse": warehouse})
+    data = []
+
+    for order in orders:
+        items = []
+        order_doc = frappe.get_doc("Sales Invoice", order.name)
+        for item in order_doc.items:
+            items.append({
+
+                'name': item.item_code,
+                'product_name': item.item_name,
+                'quantity': item.qty,
+                'price': item.rate,
+
+            })
+        data.append({
+            "order_id": order_doc.name,
+            "order_type": order_doc.order_type,
+            "status": order_doc.status,
+            "room": "",
+            "table": "",
+            "customer": order_doc.customer,
+            "total": order_doc.total,
+            "shift": order_doc.shift,
+            "pos_profile": order_doc.pos_profile,
+            "items": items,
+
+        })
+    return data
+
+
+@frappe.whitelist(allow_guest=True)
+def fetch_order():
+    data = frappe.request.args
+    order_id = data.get("order_id")
+    order = frappe.get_doc("Sales Invoice", order_id)
+    items = []
+    for item in order.items:
+        items.append({
+            'name': item.item,
+            'product_name': item.item_name,
+            'quantity': item.qty,
+            'price': item.rate,
+            'image': frappe.utils.get_url(item.image) if item.image else ""
+        })
+    data = {
+        "order_id": order.name,
+        "room": order.room,
+        "table": order.table,
+        "customer": order.customer,
+        "is_paid": order.is_paid,
+        "total": order.total_amount,
+        "items": items
+    }
+    return data
+
+
+@frappe.whitelist(allow_guest=True)
+def delete_draft_order():
+    data = frappe.request.args
+    order_id = data.get("order_id")
+    if order_id and frappe.db.exists("Sales Invoice", order_id):
+        frappe.delete_doc("Sales Invoice", order_id)
+        frappe.db.commit()
+        return "Order Deleted"
+    else:
+        return "Order not found"
+
+
+@frappe.whitelist()
+def set_unavailable_draft_order(order_id):
+    order = frappe.get_doc("Sales Invoice", order_id)
+    order.is_unavailable = 1
+    order.save(ignore_permissions=True)
+    order.submit()
+    frappe.db.commit()
+
+
+@frappe.whitelist(allow_guest=True)
+def get_user_session():
+    import erpnext
+    user = frappe.session.user
+    full_name = frappe.db.get_value("User", frappe.session.user, "full_name")
+    profiles = frappe.db.sql(
+        """SELECT name FROM `tabPOS Profile` WHERE name IN (SELECT parent FROM `tabPOS Profile User` WHERE user=%s)""", user, as_dict=1)
+    shift = frappe.get_value(
+        "POS Shift", {"user": user, "status": "Open"}, "name") or None
+    shift_profile = frappe.get_value("POS Shift", shift, "pos_profile") or None
+
+    profile_data = []
+
+    for profile in profiles:
+        profile_name = frappe.db.get_value("POS Profile", profile.name, "name")
+        profile_data.append(profile_name)
+
+        can_delete = True
+
+    data = {
+        "user": user,
+        "company": erpnext.get_default_company(),
+        "fullname": full_name,
+        "profiles": profile_data,
+        "pos_profile": shift_profile,
+        "can_delete": True if "Restaurant Admin" in frappe.get_roles(frappe.session.user) else False
+    }
+    return data
+
+
+@frappe.whitelist(allow_guest=True)
+def open_shift():
+
+    user = frappe.session.user
+    data = frappe.request.get_json()
+
+    pos_profile = data.get('pos_profile')
+    opening_amount = data['opening_balance']
+    profile = frappe.get_doc("POS Profile", pos_profile)
+    profile_user = frappe.get_all(
+        "POS Profile User", {"parent": pos_profile, "user": user}, {"user"}, as_list=1)
+    if not profile_user:
+        return "User not assigned to this profile"
+
+    company = frappe.get_value("Hotel Settings", None, "default_company")
+    profile_payments = profile.get("payments")
+
+    # chec if user has an open shift
+    shift = get_user_shift(pos_profile)
+    if shift:
+        return "Shift already open"
+
+    shift = frappe.new_doc("POS Shift")
+    shift.user = frappe.session.user
+    shift.company = company
+    shift.pos_profile = pos_profile
+    shift.status = "Open"
+    if not profile_payments:
+        shift.append("balance_details", {
+            "mode_of_payment": "Cash",
+            "opening_amount": 0
+        })
+    for payment in profile_payments:
+        shift.append("balance_details", {
+            "mode_of_payment": payment.mode_of_payment,
+            "opening_amount": 0
+        })
+    shift.save(ignore_permissions=True)
+    shift.submit()
+    frappe.db.commit()
+    return shift.name
+
+
+@frappe.whitelist(allow_guest=True)
+def get_shift_sales(shift_id=None):
+    if shift_id:
+        shift = frappe.get_doc("POS Shift", shift_id)
+        profile = shift.pos_profile
+        orders = frappe.get_all(
+            "Sales Invoice", {"docstatus": 1, "pos_profile": profile, "shift": shift.name})
+        cash_sales = 0
+        for order in orders:
+            order_doc = frappe.get_doc("Sales Invoice", order.name)
+            customer = frappe.get_value(
+                "Customer", order_doc.customer, "customer_group")
+            if order_doc.status == "Paid" and customer != "Management":
+                cash_sales += order_doc.total
+        total_sales = cash_sales
+        return total_sales
+
+    shift = frappe.get_doc("POS Shift", {"user": frappe.session.user})
+    profile = frappe.get_value("POS Shift", shift, "pos_profile")
+    open_shifts = frappe.get_all(
+        "POS Shift", {"pos_profile": profile, "status": "Open"})
+    # get all orders of the open shits
+    cash_sales = 0
+    credit_sales = 0
+    management = 0
+    total_cash_sales = []
+    payment_sales = {}
+    creation = ''
+    for shift in open_shifts:
+        warehouse = frappe.local.request.cookies.get("warehouse")
+        shift_doc = frappe.get_doc("POS Shift", {"user": frappe.session.user})
+        creation = shift_doc.creation
+
+        orders = frappe.get_all("Sales Invoice", {
+                                "docstatus": 1, "pos_profile": profile, "shift": shift['name'], "set_warehouse": warehouse})
+        profile_cash_sales = 0
+
+        for order in orders:
+            order_doc = frappe.get_doc("Sales Invoice", order.name)
+            total = order_doc.total
+            customer_group = frappe.get_value(
+                "Customer", order_doc.customer, "customer_group")
+
+            if customer_group == "Management" and order_doc.status == "Paid":
+                management += total
+            else:
+                if order_doc.status  == "Unpaid" or order_doc.status == "Overdue":
+                    credit_sales += total
+                elif order_doc.status == "Paid":
+                    for payment in order_doc.payments:
+                        if payment.mode_of_payment == "Cash":
+                            cash_sales += payment.amount
+                            payment_sales.setdefault("Cash", 0)  # initialize Cash payment sales total
+                            payment_sales["Cash"] += payment.amount
+                        else:
+                            payment_method = payment.mode_of_payment
+                            payment_sales.setdefault(payment_method, 0)  # initialize payment sales total
+                            payment_sales[payment_method] += payment.amount
+
+
+
+    total_sales = cash_sales + credit_sales + management
+    opening_amount = frappe.db.get_value("POS Opening Entry Detail", {
+                                         "parent": shift.name}, "opening_amount")
+
+    data = {
+        "shift_opened": creation,
+        "outlet": profile,
+        "cashier": frappe.db.get_value("User", frappe.session.user, "full_name"),
+        "starting_cash": 0,
+        "expected_amount": float(cash_sales),
+        "differences": 0,
+        "gross_sales": total_sales,
+        "discounts": 0,
+        "credit_sales": credit_sales,
+        "management": management,
+        "total_sales": total_sales,
+        "payment_sales": payment_sales
+    }
+    return data
+
+
+@frappe.whitelist(allow_guest=True)
+def close_shift():
+
+    # get the shift of the user
+    user = frappe.session.user
+    shift = frappe.get_value(
+        "POS Shift", {"user": user, "status": "Open"}, "name")
+    profile = frappe.get_value("POS Shift", shift, "pos_profile")
+    shift_sales = get_shift_sales()
+    total_sales = shift_sales["total_sales"]
+    if not shift:
+        return "No Open Shift found"
+    frappe.db.set_value("POS Shift", shift, "status", "Closed")
+    frappe.db.sql(
+        """UPDATE `tabPOS Opening Entry Detail` SET closing_amount=%s WHERE parent=%s""", (total_sales, shift))
+    frappe.db.commit()
+    return "Shift Closed"
+
+
+@frappe.whitelist(allow_guest=True)
+def change_food_order_date():
+    # change all the date for the food order o today and yeterday
+    today = frappe.utils.today()
+    yesterday = frappe.utils.add_days(today, -1)
+    orders = frappe.get_all("Food Order")
+    for order in orders:
+        # make it today or yestrday randomly
+        # get the last 2 digit of the order name
+        id = order.name[-2:]
+
+        if int(id) % 2 == 0:
+            frappe.db.set_value("Food Order", order.name,
+                                "posting_date", yesterday)
+            frappe.db.commit()
+        else:
+            frappe.db.set_value("Food Order", order.name,
+                                "posting_date", today)
+            frappe.db.commit()
+    return "Date Changed"
+
+
+@frappe.whitelist(allow_guest=True)
+def update_food_charges():
+    guests = frappe.get_all("Hotel Guests")
+    for guest in guests:
+        doc = frappe.get_doc("Hotel Guests", guest.name)
+        if flt(doc.stay_charges) < 0:
+            frappe.db.set_value("Hotel Guests", doc.name, "stay_charges", 0)
+            frappe.db.commit()
+
+
+@frappe.whitelist(allow_guest=True)
+def reconcile_stock():
+    doc = frappe.get_doc("Stock Reconciliation", "MAT-RECO-2024-00006")
+    # change the valuation rate of each item
+    for item in doc.items:
+        item.valuation_rate = frappe.db.get_value(
+            "Item", item.item_code, "valuation_rate") or 1
+    doc.save(ignore_permissions=True)
+    frappe.db.commit()
+    return "Stock Reconciled"
+
+
+@frappe.whitelist(allow_guest=True)
+def kds():
+    data = {}
+    doc = frappe.get_last_doc("Food Order")
+    kds_data = []
+    for item in doc.items:
+        item_doc = frappe.get_doc('Item', item.item)
+        kds = frappe.db.get_value('Item Group', item_doc.item_group, 'kitchen')
+        kds_data.append(kds)
+    return kds_data
+
+
+@frappe.whitelist(allow_guest=True)
+def print_job():
+    form_dict = frappe.request.get_json()
+    print_type = form_dict.get("type")
+    data = form_dict.get("data")
+
+    try:
+        printer = frappe.db.get_value(
+            "Restaurant Settings", None, "default_printer")
+        if print_type == "order" and printer:
+            print_by_server('Food Order', data.get(
+                "order_id"), printer, 'Food Order')
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "message": "Print Job Sent"
+        })
+    except Exception as e:
+        # log the erro
+        frappe.log_error(frappe.get_traceback(), "Custom Error Log")
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": e
+        })
+
+
+@frappe.whitelist()
+def get_all_items(company=None):
+    try:
+        from jokoor_pos.resource.api.items import get_item_by_warehouse
+        shift = frappe.get_value(
+            "POS Shift", {"status": "Open", "owner": frappe.session.user}, "pos_profile")
+        pos_profile = frappe.get_doc("POS Profile", shift)
+        comapny = pos_profile.company
+
+        data = []
+        filters = {"disabled": 0, "variant_of": "", "is_sales_item": 1}
+
+        if pos_profile.item_groups:
+            item_groups = frappe.get_all(
+                "POS Item Group", {"parent": pos_profile.name}, pluck="item_group")
+            filters["item_group"] = ["in", item_groups]
+        warehouse = frappe.local.request.cookies.get("warehouse")
+
+        items = get_item_by_warehouse(filters=filters, warehouse=warehouse)
+
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": items
+        })
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("Failed to fetch items"))
+        frappe.local.response.update({
+            "http_status_code": 500,
+            "error": str(e)
+        })
+
+
+@frappe.whitelist()
+def get_items(filters):
+    warehouse = get_warehouse()
+
+    items = frappe.get_all("Item", filters=filters, order_by="name")
+    data = []
+    for item in items:
+        item_doc = frappe.get_doc("Item", item.name)
+        item_price = flt(frappe.get_value(
+            "Item Price", {"item_code": item.name}, "price_list_rate"))
+        qty = frappe.db.get_value(
+            "Bin", {"item_code": item.item_name, "warehouse": warehouse}, "actual_qty")
+
+        if item_doc.has_variants:
+            varaint_items = []
+            variants = frappe.get_all("Item", filters={"variant_of": item.name}, fields=[
+                                      "name", "item_code", "item_name", "item_group"], order_by="name", limit_page_length=20)
+            from_price = 0
+            total_variant_qty = 0
+            variant_price_list = []
+
+            for variant in variants:
+                qty = frappe.db.get_value(
+                    "Bin", {"item_code": variant.item_code, "warehouse": warehouse}, "actual_qty")
+                total_variant_qty += flt(qty)
+                variant_price = flt(frappe.db.get_value(
+                    "Item Price", {"item_code": variant.item_code}, "price_list_rate"))
+
+                variant_price_list.append(variant_price)
+                varaint_items.append({
+                    "name": variant.name,
+                    "product_name": variant.item_name,
+                    "price": variant_price,
+                    "qty": flt(qty)
+                })
+            data.append({
+                "name": item.name,
+                "product_name": item_doc.item_name,
+                "category": item_doc.item_group,
+                "price": min(variant_price_list),
+                "description": item_doc.description or "",
+                "image": frappe.utils.get_url(item_doc.image) if item_doc.image else "",
+                "is_stock": True if cint(frappe.db.get_value("Item", item_doc.item_name, "is_stock_item")) == 1 else False,
+                "warehouse": warehouse,
+                "variants": varaint_items,
+                "qty": total_variant_qty
+            })
+        else:
+            # if item_doc.variant_of:
+            #     continue
+            data.append({
+                "name": item.name,
+                "product_name": item_doc.item_name,
+                "category": item_doc.item_group,
+                "price": item_price,
+                "description": item_doc.description or "",
+                "image": frappe.utils.get_url(item_doc.image) if item_doc.image else "",
+                "is_stock": True if cint(frappe.db.get_value("Item", item_doc.item_name, "is_stock_item")) == 1 else False,
+                "qty": qty or 0,
+                "warehouse": warehouse
+
+
+            })
+    return data
+
+
+@frappe.whitelist(allow_guest=True)
+def get_food_items():
+    try:
+        warehouse = get_warehouse()
+        items = frappe.get_all("Food Item", fields=[
+                               "name", "item_name", "item_group", "item_price", "description", "image", "maintain_stock"], order_by="name")
+        data = []
+        for item in items:
+            qty = frappe.db.get_value(
+                "Bin", {"item_code": item.item_name, "warehouse": warehouse}, "actual_qty")
+            data.append({
+                "name": item.name,
+                "product_name": item.item_name,
+                "category": item.item_group,
+                "price": item.item_price,
+                "description": item.description,
+                "image": frappe.utils.get_url(item.image) if item.image else "",
+                "is_stock": True if cint(frappe.db.get_value("Item", item.item_name, "is_stock_item")) == 1 else False,
+                "qty": qty or 0,
+                "warehouse": warehouse
+            })
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": data
+        })
+    except frappe.DoesNotExistError as e:
+        frappe.local.response.update({
+            "http_status_code": 404,
+            "error": e
+        })
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Custom Error Log")
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": e
+        })
+
+
+@frappe.whitelist()
+def get_warehouse(cookie_warehouse=None):
+    pos_profile = frappe.get_value("POS Shift", {
+                                   # Todo: remove hardcoded value
+                                   "user": frappe.session.user, "status": "Open"}, "pos_profile") or "Restaurant"
+
+    if not cookie_warehouse:
+        return frappe.get_value("POS Profile", pos_profile, "warehouse")
+
+    return cookie_warehouse
+
+
+@frappe.whitelist()
+def print_order():
+    try:
+        order_id = frappe.request.args.get("order_id")
+        order = frappe.get_doc("Sales Invoice", order_id)
+        pos_profile = frappe.get_doc("POS Profile", order.pos_profile)
+        url = f"/printview?doctype=Sales%20Invoice&name={order.name}&trigger_print=1&format={pos_profile.print_format}&no_letterhead={pos_profile.letter_head}"
+        frappe.local.response.update({
+            "http_status_code": 200,
+            "data": url
+        })
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Custom Error Log")
+        frappe.local.response.update({
+            "http_status_code": 400,
+            "error": e
+        })
+
+@frappe.whitelist()
+def delete_items():
+    # delte disable items
+    items = frappe.get_all("Item", {"disabled": 1})
+    for item in items:
+        frappe.db.sql("DELETE FROM `tabItem` WHERE `name` = %s", item.name)
+    frappe.db.commit()
+    return "Items Deleted"

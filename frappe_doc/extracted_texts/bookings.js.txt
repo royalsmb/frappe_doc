@@ -1,0 +1,419 @@
+frappe.pages['bookings'].on_page_load = function(wrapper) {
+    var page = frappe.ui.make_app_page({
+        parent: wrapper,
+        title: 'Bookings',
+        single_column: true
+    });
+
+    // Add navigation buttons for months
+    page.add_inner_button('Previous Month', () => navigateMonth(-1));
+    page.add_inner_button('Next Month', () => navigateMonth(1));
+    page.add_inner_button('Today', () => goToToday());
+
+    let currentDate = moment();
+
+    // Add custom booking grid container
+    $(page.body).html(`
+        <div class="booking-grid-container">
+            <div class="room-list">
+                <div class="room-header-section">
+                    <div class="month-spacer"></div>
+                    <div class="room-header">Rooms</div>
+                </div>
+                <div class="room-items"></div>
+            </div>
+            <div class="calendar-grid">
+                <div class="month-header"></div>
+                <div class="scrollable-container">
+                    <div class="days-header"></div>
+                    <div class="bookings-grid"></div>
+                </div>
+            </div>
+        </div>
+    `);
+
+    // Add custom styles
+    $('<style>')
+        .text(`
+            .booking-grid-container {
+                display: grid;
+                grid-template-columns: 200px 1fr;
+                gap: 1px;
+                background: var(--bg-color);
+                margin: 15px;
+                border: 1px solid var(--border-color);
+                height: calc(100vh - 200px);
+                overflow: hidden;
+            }
+            .room-list {
+                background: white;
+                overflow-y: auto;
+                border-right: 1px solid var(--border-color);
+                position: relative;
+                z-index: 2;
+            }
+            .calendar-grid {
+                background: white;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                position: relative;
+            }
+            .month-header {
+                padding: 15px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 1.2em;
+                background: var(--bg-gray);
+                border-bottom: 1px solid var(--border-color);
+                height: 53px;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: sticky;
+                top: 0;
+                z-index: 3;
+            }
+            .scrollable-container {
+                flex: 1;
+                overflow: auto;
+                position: relative;
+            }
+            .days-header {
+                display: grid;
+                grid-template-columns: repeat(31, minmax(100px, 1fr));
+                background: var(--bg-gray);
+                border-bottom: 1px solid var(--border-color);
+                position: sticky;
+                top: 0;
+                z-index: 2;
+                height: 40px;
+            }
+            .day-cell {
+                padding: 10px;
+                text-align: center;
+                font-weight: bold;
+                border-right: 1px solid var(--border-color);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background: var(--bg-gray);
+            }
+            .day-number {
+                font-size: 1.2em;
+            }
+            .day-name {
+                font-size: 0.8em;
+                color: var(--text-muted);
+            }
+            .room-type-header {
+                padding: 8px;
+                height: 40px;
+                background: var(--bg-light-gray);
+                border-bottom: 1px solid var(--border-color);
+                font-weight: bold;
+                color: var(--text-color);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                user-select: none;
+                box-sizing: border-box;
+                position: sticky;
+                top: 0;
+                left: 0;
+                z-index: 3;
+            }
+            .room-type-header:hover {
+                background: var(--bg-gray);
+            }
+            .room-type-header .collapse-icon {
+                transition: transform 0.2s;
+            }
+            .room-type-header.collapsed .collapse-icon {
+                transform: rotate(-90deg);
+            }
+            .room-item {
+                padding: 8px;
+                height: 40px;
+                background: white;
+                border-bottom: 1px solid var(--border-color);
+                display: flex;
+                align-items: center;
+                box-sizing: border-box;
+                position: relative;
+                z-index: 1;
+            }
+            .room-item.hidden {
+                display: none;
+            }
+            .room-item:hover {
+                background-color: var(--bg-light-gray);
+            }
+            .bookings-grid {
+                display: grid;
+                grid-template-columns: repeat(31, minmax(100px, 1fr));
+                grid-auto-rows: 40px;
+                position: relative;
+                z-index: 1;
+            }
+            .booking-cell {
+                height: 40px;
+                border-right: 1px solid var(--border-color);
+                border-bottom: 1px solid var(--border-color);
+                position: relative;
+                box-sizing: border-box;
+            }
+            .booking-event {
+                position: absolute;
+                top: 2px;
+                bottom: 2px;
+                left: 0;
+                background: var(--primary);
+                color: white;
+                padding: 2px 5px;
+                font-size: 12px;
+                border-radius: 3px;
+                cursor: pointer;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                transition: transform 0.2s, box-shadow 0.2s;
+                z-index: 1;
+            }
+            .booking-event:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                z-index: 2;
+            }
+            .booking-event.standard-room {
+                background: #4CAF50;
+            }
+            .booking-event.deluxe {
+                background: #2196F3;
+            }
+            .booking-event.superior-annex {
+                background: #9C27B0;
+            }
+            .today {
+                background-color: var(--bg-light-gray) !important;
+            }
+            .weekend {
+                background-color: var(--bg-light-gray) !important;
+            }
+        `)
+        .appendTo('head');
+
+    // Initialize the grid
+    initializeBookingGrid();
+
+    function navigateMonth(delta) {
+        currentDate.add(delta, 'months');
+        renderGrid();
+    }
+
+    function goToToday() {
+        currentDate = moment();
+        renderGrid();
+    }
+
+    function initializeBookingGrid() {
+        console.log('Initializing booking grid...');
+        renderGrid();
+    }
+
+    function renderGrid() {
+        console.log('Rendering grid...');
+        // Update month header
+        $('.month-header').text(currentDate.format('MMMM YYYY'));
+        
+        // Load rooms and render the grid
+        frappe.call({
+            method: 'jokoor_hotel.api.get_hotel_rooms',
+            callback: function(r) {
+                console.log('Rooms API response:', r);
+                if (r.message && r.message.status === 'success') {
+                    renderRooms(r.message.resources);
+                    renderDaysHeader();
+                    loadBookings();
+                } else {
+                    frappe.msgprint(__('Failed to load rooms. Please check the console for details.'));
+                    console.error('Failed to load rooms:', r);
+                }
+            }
+        });
+    }
+
+    function renderRooms(rooms) {
+        console.log('Rendering rooms:', rooms);
+        let roomsByType = {};
+        let visibleRooms = [];
+        
+        // First sort rooms by type
+        rooms.forEach(room => {
+            if (!roomsByType[room.room_type]) {
+                roomsByType[room.room_type] = [];
+            }
+            roomsByType[room.room_type].push(room);
+            visibleRooms.push(room);
+        });
+
+        let roomListHtml = '';
+        Object.entries(roomsByType).forEach(([type, typeRooms]) => {
+            roomListHtml += `
+                <div class="room-type-header" data-type="${type}">
+                    <span class="type-name">${type}</span>
+                    <span class="collapse-icon">▼</span>
+                </div>
+            `;
+            
+            typeRooms.forEach(room => {
+                roomListHtml += `
+                    <div class="room-item" data-room="${room.id}" data-type="${type}">
+                        ${room.title}
+                    </div>
+                `;
+            });
+        });
+
+        $('.room-items').html(roomListHtml);
+
+        // Store room order for grid rendering
+        window.roomOrder = visibleRooms.map(room => room.id);
+        window.roomTypeStates = {};
+
+        // Add click handlers for collapsible headers
+        $('.room-type-header').on('click', function() {
+            const $header = $(this);
+            const roomType = $header.data('type');
+            
+            if ($header.hasClass('collapsed')) {
+                // Expand
+                $header.removeClass('collapsed');
+                $(`.room-item[data-type="${roomType}"]`).removeClass('hidden');
+                window.roomTypeStates[roomType] = 'expanded';
+            } else {
+                // Collapse
+                $header.addClass('collapsed');
+                $(`.room-item[data-type="${roomType}"]`).addClass('hidden');
+                window.roomTypeStates[roomType] = 'collapsed';
+            }
+            
+            // Rebuild grid after toggling
+            renderDaysHeader();
+            loadBookings();
+        });
+    }
+
+    function renderDaysHeader() {
+        console.log('Rendering days header...');
+        const daysInMonth = currentDate.daysInMonth();
+        let daysHeaderHtml = '';
+        
+        for (let i = 1; i <= daysInMonth; i++) {
+            const date = moment(currentDate).date(i);
+            const isWeekend = date.day() === 0 || date.day() === 6;
+            const isToday = date.isSame(moment(), 'day');
+            
+            daysHeaderHtml += `
+                <div class="day-cell ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''}">
+                    <span class="day-number">${i}</span>
+                    <span class="day-name">${date.format('ddd')}</span>
+                </div>
+            `;
+        }
+
+        $('.days-header').html(daysHeaderHtml);
+        
+        // Create grid cells only for visible rooms
+        let gridHtml = '';
+        if (window.roomOrder) {
+            window.roomOrder.forEach((roomId, index) => {
+                const $roomItem = $(`.room-item[data-room="${roomId}"]`);
+                const roomType = $roomItem.data('type');
+                
+                // Only create cells if room type is not collapsed
+                if (!window.roomTypeStates[roomType] || window.roomTypeStates[roomType] === 'expanded') {
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        const date = moment(currentDate).date(i);
+                        const isWeekend = date.day() === 0 || date.day() === 6;
+                        const isToday = date.isSame(moment(), 'day');
+                        
+                        gridHtml += `
+                            <div class="booking-cell ${isWeekend ? 'weekend' : ''} ${isToday ? 'today' : ''}" 
+                                 data-room="${roomId}" 
+                                 data-room-index="${index}"
+                                 data-day="${i}">
+                            </div>
+                        `;
+                    }
+                }
+            });
+        }
+        $('.bookings-grid').html(gridHtml);
+    }
+
+    function loadBookings() {
+        console.log('Loading bookings...');
+        frappe.call({
+            method: 'jokoor_hotel.api.get_hotel_checkins',
+            callback: function(r) {
+                console.log('Bookings API response:', r);
+                if (r.message && r.message.status === 'success') {
+                    renderBookings(r.message.events);
+                } else {
+                    frappe.msgprint(__('Failed to load bookings. Please check the console for details.'));
+                    console.error('Failed to load bookings:', r);
+                }
+            }
+        });
+    }
+
+    function renderBookings(bookings) {
+        console.log('Rendering bookings:', bookings);
+        bookings.forEach(booking => {
+            const startDate = moment(booking.start);
+            const endDate = moment(booking.end);
+            
+            // Only render if booking is in current month
+            if (startDate.isSame(currentDate, 'month') || endDate.isSame(currentDate, 'month')) {
+                const startDay = startDate.date();
+                const endDay = endDate.date();
+                const duration = endDay - startDay + 1;
+                
+                const roomIndex = window.roomOrder.indexOf(booking.resourceId);
+                const roomCell = $(`.booking-cell[data-room="${booking.resourceId}"][data-room-index="${roomIndex}"][data-day="${startDay}"]`);
+                
+                if (roomCell.length) {
+                    const roomTypeClass = booking.room_type.toLowerCase().replace(/\s+/g, '-');
+                    const bookingEl = $(`
+                        <div class="booking-event ${roomTypeClass}" 
+                             style="width: calc(${duration * 100}% - 4px)"
+                             title="${booking.title} - Room ${booking.room}">
+                            ${booking.title}
+                        </div>
+                    `).appendTo(roomCell);
+
+                    // Add click handler
+                    bookingEl.on('click', () => {
+                        frappe.msgprint({
+                            title: __('Booking Details'),
+                            indicator: 'blue',
+                            message: `
+                                <div>
+                                    <p><strong>Guest Name:</strong> ${booking.guest_name}</p>
+                                    <p><strong>Room Number:</strong> ${booking.room}</p>
+                                    <p><strong>Room Type:</strong> ${booking.room_type}</p>
+                                    <p><strong>Check-in:</strong> ${frappe.datetime.str_to_user(booking.start)}</p>
+                                    <p><strong>Check-out:</strong> ${frappe.datetime.str_to_user(booking.end)}</p>
+                                </div>
+                            `
+                        });
+                    });
+                }
+            }
+        });
+    }
+};

@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-19 02:41:49.345183",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sender",
+  "sms_template",
+  "column_break_hjgd",
+  "contact_group",
+  "schedule_at",
+  "section_break_afku",
+  "message"
+ ],
+ "fields": [
+  {
+   "fieldname": "sms_template",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "SMS Template",
+   "options": "SMS Template",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_hjgd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contact_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Contact Group",
+   "options": "SMS Contact Group",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_afku",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "sms_template.content",
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Message"
+  },
+  {
+   "fieldname": "sender",
+   "fieldtype": "Link",
+   "label": "Sender",
+   "options": "Sender"
+  },
+  {
+   "fieldname": "schedule_at",
+   "fieldtype": "Datetime",
+   "label": "Schedule at"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-19 03:12:51.046637",
+ "modified_by": "Administrator",
+ "module": "Jokoor SMS",
+ "name": "SMS Campaign",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

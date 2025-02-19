@@ -1,0 +1,30 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "frappe_doc API",
+    "version": "1.0.1",
+    "description": "API documentation for frappe_doc"
+  },
+  "servers": [
+    {
+      "url": "{{base_url}}",
+      "description": "Dynamic server URL"
+    }
+  ],
+  "paths": {},
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Frappe-API-Key"
+      },
+      "ApiSecret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Frappe-API-Secret"
+      }
+    }
+  }
+}

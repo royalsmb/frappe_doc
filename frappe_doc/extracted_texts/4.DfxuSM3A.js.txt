@@ -1,0 +1,1 @@
+import{A as o,B as c,z as i,G as s,I as _,J as l}from"./runtime.DQwr1dzu.js";function u(r,n,f){o&&c();var t=r,e,a;i(()=>{e!==(e=n())&&(a&&(_(a),a=null),e&&(a=s(()=>f(t,e))))}),o&&(t=l)}const d=Object.freeze(Object.defineProperty({__proto__:null},Symbol.toStringTag,{value:"Module"}));export{d as _,u as c};

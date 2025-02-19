@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-30 15:40:53.908440",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "date",
+  "opening_time",
+  "column_break_glrxz",
+  "opening_balance",
+  "closing_balance",
+  "closing_time",
+  "section_break_qvwkb",
+  "transactions",
+  "amended_from",
+  "status"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nDraft\nOpen\nClosed\nCancelled",
+   "read_only": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "opening_time",
+   "fieldtype": "Time",
+   "label": "Opening Time"
+  },
+  {
+   "fieldname": "closing_time",
+   "fieldtype": "Time",
+   "label": "Closing Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Session",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_glrxz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_qvwkb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "opening_balance",
+   "fieldtype": "Currency",
+   "label": "Opening Balance"
+  },
+  {
+   "fieldname": "closing_balance",
+   "fieldtype": "Currency",
+   "label": "Closing Balance"
+  },
+  {
+   "fieldname": "transactions",
+   "fieldtype": "Table",
+   "label": "Transactions",
+   "options": "Transactions"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-02-23 06:30:14.538775",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Session",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "if_owner": 1,
+   "read": 1,
+   "role": "Bureau Admin",
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Green",
+   "title": "Open"
+  },
+  {
+   "color": "Red",
+   "title": "Close"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+ "creation": "2023-05-04 14:18:54.676466",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart Source",
+ "idx": 0,
+ "modified": "2023-05-04 14:18:54.676466",
+ "modified_by": "Administrator",
+ "module": "Bureau",
+ "name": "Transfer vs Payout",
+ "owner": "Administrator",
+ "source_name": "Transfer vs Payout",
+ "timeseries": 1
+}

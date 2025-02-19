@@ -1,0 +1,14 @@
+import{a as o,t as s}from"../chunks/disclose-version.BIyVqMZ8.js";import{e as r}from"../chunks/runtime.DQwr1dzu.js";import{C as n}from"../chunks/Container.CbVs3Ov9.js";var i=s(`<div class="mb-8 text-center"><h1 class="text-3xl font-bold">Cancellation and Refund</h1> <p class="mt-2 text-sm">Last updated on Sep 30, 2024</p></div> <div class="mx-auto max-w-2xl"><p>DINK SPORTS VENTURE PRIVATE LIMITED believes in helping its customers as far as possible, and
+			has therefore adopted a liberal cancellation policy. Under this policy:</p> <h2 class="mt-6 text-xl font-bold">Cancellation Policy</h2> <p class="mt-2">Cancellations will be considered only if the request is made within 7 days of placing the
+			order. However, the cancellation request may not be entertained if the orders have been
+			communicated to the vendors/merchants and they have initiated the process of shipping them.</p> <h2 class="mt-6 text-xl font-bold">Non-cancellable Items</h2> <p class="mt-2">DINK SPORTS VENTURE PRIVATE LIMITED does not accept cancellation requests for perishable items
+			like flowers, eatables, etc. However, a refund or replacement can be made if the customer
+			establishes that the quality of the product delivered is not good.</p> <h2 class="mt-6 text-xl font-bold">Damaged or Defective Items</h2> <p class="mt-2">In case of receipt of damaged or defective items, please report the same to our Customer
+			Service team. The request will, however, be entertained once the merchant has checked and
+			determined the same at their own end. This should be reported within 7 days of receipt of the
+			products.</p> <h2 class="mt-6 text-xl font-bold">Product Not as Expected</h2> <p class="mt-2">In case you feel that the product received is not as shown on the site or as per your
+			expectations, you must bring it to the notice of our Customer Service team within 7 days of
+			receiving the product. The Customer Service team, after looking into your complaint, will take
+			an appropriate decision.</p> <h2 class="mt-6 text-xl font-bold">Products with Manufacturer Warranties</h2> <p class="mt-2">In case of complaints regarding products that come with a warranty from manufacturers, please
+			refer the issue to them.</p> <h2 class="mt-6 text-xl font-bold">Refund Policy</h2> <p class="mt-2">In case of any refunds approved by DINK SPORTS VENTURE PRIVATE LIMITED, it will take 6-8 days
+			for the refund to be processed to the end customer.</p> <div class="mt-8 text-center"><a href="https://merchant.razorpay.com/policy/P3KK0qduxLuOno/refund" class="text-attention underline" target="_blank">View Cancellation and Refund Policy on Razorpay</a></div></div>`,1);function p(e){n(e,{class:"bg-light px-4 py-8 text-black",children:(t,l)=>{var a=i();r(2),o(t,a)},$$slots:{default:!0}})}export{p as component};

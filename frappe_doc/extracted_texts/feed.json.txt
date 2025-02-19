@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "autoname": "format:POST_{##}",
+ "creation": "2024-08-14 17:02:47.216113",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "like_count",
+  "column_break_zzkb",
+  "space_id",
+  "posting_date",
+  "attach",
+  "section_break_fmbf",
+  "description"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "like_count",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Like Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_zzkb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Posting date",
+   "options": "Today",
+   "reqd": 1
+  },
+  {
+   "fieldname": "attach",
+   "fieldtype": "Attach",
+   "label": "Attach"
+  },
+  {
+   "fieldname": "section_break_fmbf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee Name",
+   "options": "Customer Employees",
+   "reqd": 1
+  },
+  {
+   "fieldname": "space_id",
+   "fieldtype": "Link",
+   "label": "Space",
+   "options": "Space",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-08-14 17:43:28.034880",
+ "modified_by": "Administrator",
+ "module": "WSC",
+ "name": "Feed",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee"
+}
