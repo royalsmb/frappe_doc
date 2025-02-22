@@ -189,6 +189,7 @@ vars:pre-request {{
         module_path = doc.get("module_path", module.__name__)
         endpoint_path = f"{module_path}.{func.__name__}"
 
+        # Fix: Properly handle curly braces in f-string by doubling them
         content = f"""meta {{
   name: {func.__name__}
   type: http
@@ -211,10 +212,12 @@ body:multipart-form {{"""
         content += "\n}"
 
         if doc["description"]:
+            # Fix: Use a raw string to handle the docstring properly, or replace newlines first
+            description = doc["description"].replace("\n", "\n  ")
             content += f"""
 
 docs {{
-  {doc["description"].replace("\n", "\n  ")}
+  {description}
 }}"""
 
         return content
