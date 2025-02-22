@@ -197,7 +197,7 @@ app_license = "mit"
 
 # Request Events
 # ----------------
-# before_request = ["frappe_doc.utils.before_request"]
+before_request = ["frappe_doc.bruno.handle_request.check_bruno_decorator"]
 # after_request = ["frappe_doc.utils.after_request"]
 
 # Job Events
