@@ -9,6 +9,7 @@
 frappe.ui.form.on('Bruno Collection', {
     refresh: function(frm) {
         // Add Generate Collection button handler
+        if (!frm.is_new()) {
         frm.add_custom_button(__('Generate Collection'), function() {
             frappe.call({
                 method: 'frappe_doc.bruno.utils.generate_bruno_collection',
@@ -58,4 +59,5 @@ frappe.ui.form.on('Bruno Collection', {
             }).addClass('btn-primary');
         // }
     }
+}
 });
