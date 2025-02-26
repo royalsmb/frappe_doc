@@ -77,7 +77,7 @@ def bruno(method="get", log=True):
                             "endpoint": endpoint,
                             "method": method.upper(),
                             "request_data": json.dumps(request_data, default=str),
-                            "response_data": json.dumps(frappe.local.response.data, default=str),
+                            "response_data": json.dumps(frappe.local.response, default=str),
                             "status": "Success" if frappe.local.response.http_status_code in [200, 201] else "Failed",
                             "execution_time": execution_time,
                             "timestamp": start_time
