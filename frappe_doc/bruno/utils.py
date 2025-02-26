@@ -9,11 +9,17 @@ from frappe import scrub
 import zipfile
 import importlib.util
 import sys
+import datetime
+import traceback
 
-def bruno(method="get"):
+def bruno(method="get", log=True):
     """
     Decorator to mark and document API endpoints for Bruno.
     Only accepts HTTP method as a parameter, defaults to POST.
+    
+    Parameters:
+        method (str): HTTP method (get, post, put, delete)
+        log (bool): Whether to log API calls to API Log doctype
     """
     def decorator(func: Callable) -> Callable:
         docstring = inspect.getdoc(func) or ""
@@ -36,7 +42,50 @@ def bruno(method="get"):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            return func(*args, **kwargs)
+            start_time = datetime.datetime.now()
+            endpoint = f"{module_path}.{func.__name__}"
+            request_data = kwargs.copy()
+            
+            # Remove sensitive data if present
+            for key in list(request_data.keys()):
+                if 'password' in key.lower() or 'token' in key.lower() or 'secret' in key.lower():
+                    request_data[key] = '******'
+            
+            success = False
+            response_data = None
+            error = None
+            
+            try:
+                # Execute the original function
+                response_data = func(*args, **kwargs)
+                success = True
+                return response_data
+            except Exception as e:
+                error = str(e)
+                error_trace = traceback.format_exc()
+                raise
+            finally:
+                end_time = datetime.datetime.now()
+                execution_time = (end_time - start_time).total_seconds()
+                
+                # Only log if logging is enabled for this endpoint
+                if log:
+                    try:
+                        # Log the API call
+                        log_entry = frappe.get_doc({
+                            "doctype": "API Log",
+                            "endpoint": endpoint,
+                            "method": method.upper(),
+                            "request_data": json.dumps(request_data, default=str),
+                            "response_data": json.dumps(frappe.local.response.data, default=str),
+                            "status": "Success" if frappe.local.response.http_status_code in [200, 201] else "Failed",
+                            "execution_time": execution_time,
+                            "timestamp": start_time
+                        })
+                        log_entry.insert(ignore_permissions=True)
+                        frappe.db.commit()
+                    except Exception as log_error:
+                        frappe.logger().error(f"Failed to log API call: {str(log_error)}")
 
         return wrapper
 
@@ -260,3 +309,29 @@ def download_collection(docname):
     except Exception as e:
         frappe.log_error("Bruno Collection Download Error", str(e))
         return {"message": f"Error creating zip file: {str(e)}", "status": "error"}
+
+@frappe.whitelist()
+def view_api_logs(limit=20, status=None, endpoint=None):
+    """Retrieves API logs with optional filtering"""
+    filters = {"doctype": "API Log"}
+    
+    if status:
+        filters["status"] = status
+    if endpoint:
+        filters["endpoint"] = ["like", f"%{endpoint}%"]
+    
+    logs = frappe.get_all(
+        "API Log",
+        fields=["name", "endpoint", "method", "status", "execution_time", "timestamp"],
+        filters=filters,
+        order_by="timestamp desc",
+        limit_page_length=int(limit)
+    )
+    
+    return logs
+
+@frappe.whitelist()
+def get_api_log_details(log_name):
+    """Get detailed information for a specific API log"""
+    log = frappe.get_doc("API Log", log_name)
+    return log
