@@ -42,7 +42,7 @@
   },
   {
    "fieldname": "response_data",
-   "fieldtype": "Small Text",
+   "fieldtype": "Code",
    "label": "Response Data",
    "read_only": 1
   },
@@ -56,7 +56,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-26 16:12:30.581874",
+ "modified": "2025-02-26 16:40:03.733820",
  "modified_by": "Administrator",
  "module": "Frappe Doc",
  "name": "API Log",
